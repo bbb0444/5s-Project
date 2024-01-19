@@ -1,0 +1,70 @@
+.grain {
+  filter: contrast(100%) brightness(100%);
+  background: url("/SVG/grain.svg"),
+    radial-gradient(
+      circle,
+      rgba(238, 174, 202, 1) 0%,
+      rgba(148, 187, 233, 1) 100%
+    );
+  // background-clip: text;
+  // -webkittext-fill-color: transparent;
+}
+.overlay {
+  // background: rgb(139, 131, 129);
+  mix-blend-mode: multiply;
+}
+
+.isolate {
+  isolation: isolate;
+}
+
+.image {
+  position: relative;
+  display: inline-block;
+  transition: all 0.5s ease;
+}
+
+.image:hover {
+  transform: scale(1.1);
+
+  .dropContent {
+    opacity: 1;
+    // display: block;
+    animation: growRight 300ms ease-in-out forwards;
+    // transform-origin: left center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.dropContent {
+  // border: 1px solid #ccc;
+  position: absolute;
+  height: 100%;
+  left: 100%;
+  top: 0%;
+  opacity: 0;
+  display: none;
+  transform: scaleX(0);
+  font-size: clamp(3rem, 10vw, 10rem);
+  margin-left: 10%;
+  // writing-mode: vertical-rl;
+
+  background-color: green;
+}
+
+@keyframes growRight {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  // 80% {
+  //   opacity: 0.5;
+  //   transform: scaleX(0.8);
+  // }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}

@@ -10,7 +10,11 @@ export default class SceneInit {
     this.renderer = undefined;
 
     // NOTE: Camera params;
-    this.fov = 45;
+    this.cameraZ = 80;
+    this.fov =
+      2 *
+      Math.atan(this.cameraZ / 100 / (window.innerWidth / window.innerHeight)) *
+      (180 / Math.PI);
     this.nearPlane = 1;
     this.farPlane = 1000;
     this.canvasId = canvasId;
@@ -23,6 +27,7 @@ export default class SceneInit {
     // NOTE: Lighting is basically required.
     this.ambientLight = undefined;
     this.directionalLight = undefined;
+    this.pointLight = undefined;
     this.useOrbitControls = useOrbitControls;
   }
 
@@ -34,7 +39,7 @@ export default class SceneInit {
       1,
       1000
     );
-    this.camera.position.z = 48;
+    this.camera.position.z = this.cameraZ;
 
     // NOTE: Specify a canvas which is already created in the HTML.
     const canvas = document.getElementById(this.canvasId);
@@ -44,7 +49,9 @@ export default class SceneInit {
       antialias: true,
       alpha: true,
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    this.onWindowResize();
+
     // this.renderer.shadowMap.enabled = true;
     document.body.appendChild(this.renderer.domElement);
 
@@ -60,8 +67,12 @@ export default class SceneInit {
     this.ambientLight.castShadow = true;
     this.scene.add(this.ambientLight);
 
+    this.pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    this.pointLight.position.copy(this.camera.position);
+    this.scene.add(this.pointLight);
+
     // directional light - parallel sun rays
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 50);
     // this.directionalLight.castShadow = true;
     this.directionalLight.position.set(0, 32, 64);
     this.scene.add(this.directionalLight);
@@ -99,8 +110,20 @@ export default class SceneInit {
   }
 
   onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    // console.log(window.innerWidth, window.innerHeight);
+
+    const aspectRatio = window.innerWidth / window.innerHeight;
+    this.camera.aspect = aspectRatio;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Calculate new FOV
+    const fov =
+      2 *
+      Math.atan(this.camera.position.z / 100 / aspectRatio) *
+      (180 / Math.PI);
+    this.camera.fov = fov;
+    console.log(fov);
+    // this.camera.position.z = window.innerWidth / window.innerHeight;
   }
 }

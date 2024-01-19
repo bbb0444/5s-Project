@@ -1,0 +1,40 @@
+.image {
+  position: relative;
+  display: inline-block;
+  transition: all 0.5s ease;
+}
+
+.image:hover {
+  transform: scale(1.1);
+}
+.image:hover .dropContent {
+  opacity: 1;
+  display: block;
+  animation: growRight 300ms ease-in-out forwards;
+  transform-origin: left center;
+}
+
+.dropContent {
+  position: absolute;
+  left: 100%;
+  top: 0%;
+  padding-left: 20px;
+  opacity: 0;
+  display: none;
+  transform: scaleX(0);
+}
+
+@keyframes growRight {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  80% {
+    opacity: 0.5;
+    transform: scaleX(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}/*# sourceMappingURL=Header.module.css.map */

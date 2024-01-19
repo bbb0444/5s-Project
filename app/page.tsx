@@ -1,18 +1,25 @@
-import FiveSenses from "./components/five-senses";
-import "./styles/fonts.css";
+import FiveSenses from "./components/FiveSenses";
+import Header from "./components/Header";
+import ScrollingText from "./components/ScrollingText";
 import React, { useState, useEffect } from "react";
+import "./globals.scss";
 
 export default function Home() {
   return (
-    <main>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <div>
-          <FiveSenses />
-        </div>
-        <div style={{ fontFamily: "lcd" }}>
-          <h1>welcome.</h1>
+    <main className="flex">
+      <div className="w-1/3 min-w-40">
+        <Header></Header>
+      </div>
+      <div className="w-2/3 min-w-80 p-6 flex">
+        <div className="flex-1">
+          {/* <div className="text-2xl" style={{ fontFamily: "lcd" }}>
+            <h1>home</h1>
+          </div> */}
         </div>
       </div>
+      {/* <div>
+        <FiveSenses />
+      </div> */}
     </main>
   );
 }
