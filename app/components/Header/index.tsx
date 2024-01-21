@@ -9,7 +9,6 @@ const Header = () => {
     <header>
       <nav>
         <ul className={styles.column}>
-          <ScrollingText />
           <li className={styles.container}>
             <Image
               src={"/SVG/Eye.svg"}

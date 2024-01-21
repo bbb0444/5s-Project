@@ -9,6 +9,7 @@ export default function Home() {
     <main className="">
       <div className="">
         {/* <div className="w-1/3 min-w-40"> */}
+        <ScrollingText />
         <Header></Header>
       </div>
       {/* <div className="w-2/3 min-w-80 p-6 flex">
