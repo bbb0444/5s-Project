@@ -6,17 +6,15 @@ import "./globals.scss";
 
 export default function Home() {
   return (
-    <main className="flex">
-      <div className="w-1/3 min-w-40">
+    <main className="">
+      <div className="">
+        {/* <div className="w-1/3 min-w-40"> */}
         <Header></Header>
       </div>
-      <div className="w-2/3 min-w-80 p-6 flex">
+      {/* <div className="w-2/3 min-w-80 p-6 flex">
         <div className="flex-1">
-          {/* <div className="text-2xl" style={{ fontFamily: "lcd" }}>
-            <h1>home</h1>
-          </div> */}
         </div>
-      </div>
+      </div> */}
       {/* <div>
         <FiveSenses />
       </div> */}

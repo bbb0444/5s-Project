@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-$bg-colour: rgb(221, 223, 216);
-$main-text-colour: rgb(35, 31, 32);
-$secondary-text-colour: rgb(239, 0, 60);
+@import "./variables.scss";
 
 @font-face {
   font-family: "lcd";

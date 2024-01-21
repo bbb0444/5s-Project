@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .grain {
   filter: contrast(100%) brightness(100%);
   background: url("/SVG/grain.svg"),
@@ -18,40 +20,61 @@
   isolation: isolate;
 }
 
-.image {
+.column {
   position: relative;
-  display: inline-block;
-  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5%;
+  object-fit: cover;
+  min-width: 25vw;
+  overflow: hidden;
+  // height: 100vh;
+  // width: 100%;
 }
 
-.image:hover {
-  transform: scale(1.1);
+.image {
+  padding: 10%;
+}
+
+.container {
+  position: relative;
+  opacity: 1;
+}
+
+.container .image {
+  // transition: all 0.3s ease;
+}
+
+.container:hover {
+  .image {
+    // transform: scale(1.1);
+    opacity: 0;
+    // transition: all 0.3s ease;
+  }
 
   .dropContent {
     opacity: 1;
-    // display: block;
-    animation: growRight 300ms ease-in-out forwards;
-    // transform-origin: left center;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
   }
 }
 
 .dropContent {
-  // border: 1px solid #ccc;
   position: absolute;
-  height: 100%;
-  left: 100%;
-  top: 0%;
-  opacity: 0;
-  display: none;
-  transform: scaleX(0);
-  font-size: clamp(3rem, 10vw, 10rem);
-  margin-left: 10%;
-  // writing-mode: vertical-rl;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-  background-color: green;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  // display: none;
+  // transform: scaleX(1);
+  font-size: clamp(3rem, 10vw, 5rem);
+  color: $secondary-text-colour;
+  // background-color: green;
 }
 
 @keyframes growRight {

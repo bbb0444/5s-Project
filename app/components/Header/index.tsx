@@ -1,86 +1,83 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./Header.module.scss";
-
 import ScrollingText from "../ScrollingText";
+import CameraSearch from "../CameraSearch";
 
 const Header = () => {
   return (
     <header>
       <nav>
-        <ul className="flex flex-col p-10% relative">
+        <ul className={styles.column}>
           <ScrollingText />
-          <li className={styles.image}>
+          <li className={styles.container}>
             <Image
               src={"/SVG/Eye.svg"}
               alt="black and white print of a eye"
-              width={500} // width of the image file
-              height={500} // height of the image file
-              className="order-1 p-5%"
+              width={150} // width of the image file
+              height={150} // height of the image file
+              className={styles.image}
             />
-
             <div className={styles.dropContent}>
-              <h1>eye</h1>
+              <CameraSearch text="eye"></CameraSearch>
             </div>
           </li>
 
-          <li className={styles.image}>
+          <li className={styles.container}>
             <Image
               src={"/SVG/Ear.svg"}
               alt="black and white print of a ear"
-              width={500} // width of the image file
-              height={500} // height of the image file
-              className="p-10%"
+              width={100} // width of the image file
+              height={100} // height of the image file
+              className={styles.image}
             />
             <div className={styles.dropContent}>
               {/* <div className={styles.isolate}>
                 <div className={styles.grain}>
                   <div className={styles.overlay}> */}
-              <h1>e</h1>
-              <h1>a</h1>
-              <h1>r</h1>
+              <CameraSearch text="ear"></CameraSearch>
             </div>
             {/* </div>
               </div>
             </div> */}
           </li>
 
-          <li className={styles.image}>
+          <li className={styles.container}>
             <Image
               src={"/SVG/Mouth.svg"}
               alt="black and white print of a mouth"
-              width={500} // width of the image file
-              height={500} // height of the image file
-              className="p-10%"
+              width={120} // width of the image file
+              height={120} // height of the image file
+              className={styles.image}
             />
             <div className={styles.dropContent}>
-              <h1>mouth</h1>
+              <CameraSearch text="mouth"></CameraSearch>
             </div>
           </li>
 
-          <li className={styles.image}>
+          <li className={styles.container}>
             <Image
               src={"/SVG/Hand.svg"}
               alt="black and white print of a hand"
-              width={500} // width of the image file
-              height={500} // height of the image file
-              className="p-10%"
+              width={110} // width of the image file
+              height={110} // height of the image file
+              className={styles.image}
             />
             <div className={styles.dropContent}>
-              <h1>hand</h1>
+              <CameraSearch text="hand"></CameraSearch>
             </div>
           </li>
 
-          <li className={styles.image}>
+          <li className={styles.container}>
             <Image
               src={"/SVG/Nose.svg"}
               alt="black and white print of a nose"
-              width={500} // width of the image file
-              height={500} // height of the image file
-              className="p-10%"
+              width={105} // width of the image file
+              height={105} // height of the image file
+              className={styles.image}
             />
             <div className={styles.dropContent}>
-              <h1>nose</h1>
+              <CameraSearch text="nose"></CameraSearch>
             </div>
           </li>
         </ul>

@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  justify-content: space-around; // or use 'space-between'
+  align-items: center;
+  width: 90vw;
+}
+
+.text {
+  //   margin: 5%;
+}
+
+.camera {
+  //   transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.search {
+  //   transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}

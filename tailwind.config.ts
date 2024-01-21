@@ -17,6 +17,7 @@ const config: Config = {
         lcd: ['"lcd"', "fallback", "sans-serif"],
       },
       spacing: {
+        "50%": "50%",
         "10%": "10%",
         "7%": "7%",
         "5%": "5%",
