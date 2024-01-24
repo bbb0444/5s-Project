@@ -1,15 +1,28 @@
 @import "../variables.scss";
 
-.container {
+.root {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  min-width: 25vw;
+  pointer-events: none;
+}
+
+.parent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.container {
 }
 
 .image {
   position: relative;
   z-index: 1;
+  pointer-events: none;
 }
 
 .captureContainer {
@@ -22,6 +35,7 @@
   padding-top: 5.5%;
   padding-right: 26.6%;
   padding-bottom: 7.5%;
+  pointer-events: none;
   // width: 64.5%;
   // // height: 64.5%;
   // padding-bottom: 17.7%;
@@ -31,7 +45,7 @@
   //   justify-content: center;
 }
 
-.capture {
+.video {
   background-color: $black;
   position: relative;
   width: 100%;
@@ -40,4 +54,37 @@
   // position: absolute;
   // text-align: center;
   //   width: 100%; // Add this line
+
+  .button {
+  }
+}
+
+.capture {
+  display: none;
+}
+
+.captured {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.captureButton {
+}
+
+.imageCropper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  z-index: -1;
+  pointer-events: all;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
 }
