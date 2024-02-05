@@ -1,28 +1,74 @@
 @import "../variables.scss";
 
 .root {
+  opacity: 1;
+  transition: opacity 5s ease-in-out;
+
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 25vw;
-  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  width: 100%;
+  padding: 5%;
+
+  min-width: 25rem;
 }
 
-.parent {
+.cameraContainer {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  pointer-events: none;
-}
-.container {
-}
-
-.image {
-  position: relative;
   z-index: 1;
   pointer-events: none;
+}
+
+.container2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  pointer-events: all;
+}
+
+.camera_enter_active {
+  transform: translateX(0%);
+}
+.camera_enter {
+  transform: translateX(50%);
+  transition: all 500ms ease;
+}
+
+.camera_exit {
+  transform: translateX(0%);
+  transition: all 1000ms ease;
+}
+
+.camera_exit_active {
+  transform: translateX(-150%);
+}
+
+.clear {
+  opacity: 0;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fade {
+  animation: fadeOut 0.5s forwards; // Play the fadeOut animation once
 }
 
 .captureContainer {
@@ -36,31 +82,51 @@
   padding-right: 26.6%;
   padding-bottom: 7.5%;
   pointer-events: none;
+  min-width: 25;
   // width: 64.5%;
   // // height: 64.5%;
   // padding-bottom: 17.7%;
 
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+}
+
+.postCaptureContainer {
+  background-color: blue;
 }
 
 .video {
-  background-color: $black;
   position: relative;
-  width: 100%;
+  // background-color: $black;
   height: 100%;
   z-index: -1;
-  // position: absolute;
-  // text-align: center;
-  //   width: 100%; // Add this line
-
-  .button {
-  }
 }
 
-.capture {
+.hidden {
   display: none;
+}
+
+.altUpload {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: all;
+}
+
+.static {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: all;
 }
 
 .captured {
@@ -76,15 +142,79 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: red;
+  // background-color: red;
   z-index: -1;
   pointer-events: all;
 }
 
-.buttons {
+.croppedImage {
+  // position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  height: auto;
+  width: 35%;
+  // background-color: green;
+}
+
+.buttons {
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // justify-content: center;
   pointer-events: all;
+}
+
+.accept {
+  position: absolute;
+  top: 0;
+  left: 0;
+  // width: 100%;
+  // height: 100%;
+  margin-left: 82.1%;
+  margin-top: 43.5%;
+  margin-bottom: 12.5%;
+  margin-right: 11%;
+  pointer-events: all;
+}
+
+.reset {
+  position: absolute;
+  top: 0;
+  left: 0;
+  // width: 100%;
+  // height: 100%;
+  margin-left: 77.3%;
+  margin-top: 30.15%;
+  margin-bottom: 25.9%;
+  margin-right: 15.9%;
+  pointer-events: all;
+}
+
+.abort {
+  position: absolute;
+  top: 0;
+  left: 0;
+  // width: 100%;
+  // height: 100%;
+  margin-left: 77.4%;
+  margin-top: 21.1%;
+  margin-bottom: 35%;
+  margin-right: 15.9%;
+  pointer-events: all;
+}
+
+.rotSlider {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 77.4%;
+  margin-top: 17%;
+  margin-bottom: 43.8%;
+  margin-right: 3.5%;
+}
+
+.category {
+  margin: 5%;
 }

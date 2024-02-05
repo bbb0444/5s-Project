@@ -156,6 +156,8 @@ const ImageCropper: FC<Props> = ({
             onCropChange={onCropChange}
             onRotationChange={onRotationChange}
             onCropComplete={handleCrop}
+            // restrictPosition={false}
+            // cropSize={{ width: 500, height: 500 }}
           />
         </div>
       )}
