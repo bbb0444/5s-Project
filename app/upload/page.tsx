@@ -1,16 +1,14 @@
 "use client";
+
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import styles from "./upload.module.scss";
 import Image from "next/image";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, delay } from "framer-motion";
 import ImageCropper from "../components/ImageCropper";
 import { DropDownMenu, DropDownItem } from "../components/Dropdown";
-import { get } from "http";
-import { Staatliches } from "next/font/google";
-import { StereoCamera } from "three";
 
-import { CSSTransition } from "react-transition-group";
+import { useSearchParams } from "next/navigation";
 
 function Index() {
   // photo
@@ -30,15 +28,17 @@ function Index() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // writing
+  const searchParams = useSearchParams();
 
   type Category = "eye" | "ear" | "mouth" | "nose" | "hand";
   const categories: Category[] = ["eye", "ear", "mouth", "nose", "hand"];
 
-  const [cameraHidden, setCameraHidden] = useState(false);
-  const [category, setCategory] = useState<Category>("eye");
-  const [body, setBody] = useState("");
+  type Windows = "camera" | "writing";
 
-  const [activeWindow, setActiveWindow] = useState("camera");
+  const [category, setCategory] = useState<Category>("eye");
+
+  const [body, setBody] = useState("");
+  const [activeWindow, setActiveWindow] = useState<Windows>("camera");
 
   const handleOnZoom = useCallback((zoomValue: number) => {
     setZoom(zoomValue);
@@ -116,150 +116,141 @@ function Index() {
     setRotation(0); // Reset rotation to initial value
     console.log(croppedImage);
     setPosition({ x: 0, y: 0 });
-    setCameraHidden(false);
   };
   const abort = () => {
     setHasPhoto(false);
     setPhotoData(null);
     getCapture();
-    setCameraHidden(false);
   };
 
   useEffect(() => {
     getCapture();
-  }, []);
-
-  // useEffect(() => {
-  //   if (cameraHidden) {
-  //     const timer = setTimeout(() => {
-  //       setInTransition(true);
-  //     }, 500); // Delay equal to the transition duration
-
-  //     return () => {
-  //       clearTimeout(timer);
-  //       setWriting(true);
-  //     };
-  //   } else {
-  //     setInTransition(false);
-  //   }
-  // }, [cameraHidden]);
+    setCategory(searchParams.get("category") as Category);
+  }, [searchParams]);
 
   return (
     <div className={styles.root}>
-      <CSSTransition
-        in={activeWindow === "camera"}
-        timeout={500}
-        unmountOnExit
-        classNames={{
-          enter: styles.camera_enter,
-          enterActive: styles.camera_enter_active,
-          exit: styles.camera_exit,
-          exitActive: styles.camera_exit_active,
-        }}
-      >
-        <div className={styles.cameraContainer}>
-          <Image
-            src={"/SVG/upload.svg"}
-            alt="black and white back face of a digital camera"
-            width={1000} // width of the image file
-            height={1000} // height of the image file
-            className={styles.camera}
-          />
-          <div className={styles.captureContainer}>
-            {hasPhoto && (
-              <div className={styles.imageCropper}>
-                <ImageCropper
-                  position={position}
-                  zoom={zoom}
-                  onZoomChange={handleOnZoom}
-                  rotation={rotation}
-                  onRotationChange={setRotation}
-                  source={photoData!}
-                  onCrop={setCroppedImage}
-                  onCropChange={setPosition}
-                  width={1000}
-                  height={1000}
-                />
-              </div>
-            )}
-            {!hasPhoto && (
-              <>
-                <div className={styles.video}>
-                  <video ref={videoRef} className={styles.video} />
-                  <div className={styles.altUpload}>
-                    <label htmlFor="fileUpload" style={{ cursor: "pointer" }}>
-                      <Image
-                        src={"/imgs/static.gif"}
-                        alt="moving television static"
-                        width={1000}
-                        height={1000}
-                        className={videoActive ? styles.hidden : styles.static}
-                      ></Image>
-                    </label>
+      <AnimatePresence initial={true} mode="popLayout">
+        {activeWindow === "camera" && (
+          <motion.div
+            initial={{ x: "-100vw" }}
+            animate={{ x: "0" }}
+            exit={{ x: "-100vw" }}
+            transition={{
+              animate: { duration: 0.75, delay: 0.25, type: "spring" }, // delay for entering animation
+              exit: { duration: 0.75, delay: 1, type: "spring" }, // delay for exiting animation
+            }}
+          >
+            <div className={styles.cameraContainer}>
+              <Image
+                src={"/SVG/upload.svg"}
+                alt="black and white back face of a digital camera"
+                width={1000} // width of the image file
+                height={1000} // height of the image file
+                className={styles.camera}
+              />
+              <div className={styles.captureContainer}>
+                {hasPhoto && (
+                  <div className={styles.imageCropper}>
+                    <ImageCropper
+                      position={position}
+                      zoom={zoom}
+                      onZoomChange={handleOnZoom}
+                      rotation={rotation}
+                      onRotationChange={setRotation}
+                      source={photoData!}
+                      onCrop={setCroppedImage}
+                      onCropChange={setPosition}
+                      width={1000}
+                      height={1000}
+                    />
                   </div>
-                </div>
-
-                {altUpload && (
-                  <input
-                    className={"hidden"}
-                    id="fileUpload"
-                    type="file"
-                    accept="image/*"
-                    capture={true}
-                    onChange={(event) => {
-                      if (event.target.files) {
-                        const file = event.target.files[0];
-                        setPhotoData(URL.createObjectURL(file));
-                        setHasPhoto(true);
-
-                        // handle the file
-                      }
-                    }}
-                  />
                 )}
-              </>
-            )}
-          </div>
+                {!hasPhoto && (
+                  <>
+                    <div className={styles.video}>
+                      <video ref={videoRef} className={styles.video} />
+                      <div className={styles.altUpload}>
+                        <label
+                          htmlFor="fileUpload"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <Image
+                            src={"/imgs/static.gif"}
+                            alt="moving television static"
+                            width={1000}
+                            height={1000}
+                            className={
+                              videoActive ? styles.hidden : styles.static
+                            }
+                          ></Image>
+                        </label>
+                      </div>
+                    </div>
 
-          <div className={"hidden"}>
-            <canvas ref={photoRef}></canvas>
-          </div>
+                    {altUpload && (
+                      <input
+                        className={"hidden"}
+                        id="fileUpload"
+                        type="file"
+                        accept="image/*"
+                        capture={true}
+                        onChange={(event) => {
+                          if (event.target.files) {
+                            const file = event.target.files[0];
+                            setPhotoData(URL.createObjectURL(file));
+                            setHasPhoto(true);
 
-          <div className={styles.buttons}>
-            {videoActive && !hasPhoto && (
-              <button onClick={takePhoto}> capture </button>
-            )}
-            <div className={styles.accept}>
-              <button onClick={acceptPhoto} className={styles.buttons}>
-                <Image
-                  src={"/SVG/buttons/accept.svg"}
-                  width={70}
-                  height={70}
-                  alt="accept symbol button"
-                />
-              </button>
+                            // handle the file
+                          }
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+
+              <div className={"hidden"}>
+                <canvas ref={photoRef}></canvas>
+              </div>
+
+              <div className={styles.buttons}>
+                {videoActive && !hasPhoto && (
+                  <button onClick={takePhoto}> capture </button>
+                )}
+                <div className={styles.accept}>
+                  <button onClick={acceptPhoto} className={styles.buttons}>
+                    <Image
+                      src={"/SVG/buttons/accept.svg"}
+                      width={70}
+                      height={70}
+                      alt="accept symbol button"
+                    />
+                  </button>
+                </div>
+                <div className={styles.reset}>
+                  <button onClick={reset} className={styles.buttons}>
+                    <Image
+                      src={"/SVG/buttons/reset.svg"}
+                      width={70}
+                      height={70}
+                      alt="reset symbol button"
+                    />
+                  </button>
+                </div>
+                <div className={styles.abort}>
+                  <button onClick={abort} className={styles.buttons}>
+                    <Image
+                      src={"/SVG/buttons/abort.svg"}
+                      width={70}
+                      height={70}
+                      alt="abort symbol button"
+                    />
+                  </button>
+                </div>
+                {/* <div className={styles.rotSlider}> */}
+              </div>
             </div>
-            <div className={styles.reset}>
-              <button onClick={reset} className={styles.buttons}>
-                <Image
-                  src={"/SVG/buttons/reset.svg"}
-                  width={70}
-                  height={70}
-                  alt="reset symbol button"
-                />
-              </button>
-            </div>
-            <div className={styles.abort}>
-              <button onClick={abort} className={styles.buttons}>
-                <Image
-                  src={"/SVG/buttons/abort.svg"}
-                  width={70}
-                  height={70}
-                  alt="abort symbol button"
-                />
-              </button>
-            </div>
-            {/* <div className={styles.rotSlider}> */}
             <input
               type="range"
               min="0"
@@ -269,50 +260,59 @@ function Index() {
               ref={inputRef}
               style={{}}
             />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence initial={true} mode="popLayout">
+        {activeWindow === "writing" && (
+          <div className={styles.writingContainer}>
+            <motion.div
+              initial={{ x: "-100vw" }}
+              animate={{ x: "0" }}
+              exit={{ x: "-100vw" }}
+              transition={{
+                animate: { duration: 0.75, delay: 1, type: "spring" }, // delay for entering animation
+                exit: { duration: 0.75, delay: 0.25, type: "spring" }, // delay for exiting animation
+              }}
+            >
+              <button onClick={() => setActiveWindow("camera")}>back</button>
+              <Image
+                src={URL.createObjectURL(croppedImage!)}
+                // src="/imgs/shirt.jpg"
+                alt="cropped user image"
+                width={100} // width of the image file
+                height={100} // height of the image file
+                className={styles.croppedImage}
+              />
+
+              {/* <label>category:</label> */}
+              <DropDownMenu
+                selected={category}
+                // value={category}
+                // onChange={(e) => setCategory(e.target.value as Category)}
+                // className={styles.category}
+              >
+                {categories.map((category) => (
+                  <DropDownItem
+                    key={category}
+                    name={category}
+                    imageSRC={"/SVG/" + category + ".svg"}
+                    imageALT={"SVG Image of " + category}
+                    onClick={() => setCategory(category)}
+                  ></DropDownItem>
+                ))}
+              </DropDownMenu>
+              <textarea
+                required
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+              ></textarea>
+              <button>Add Blog</button>
+            </motion.div>
           </div>
-        </div>
-      </CSSTransition>
-
-      <CSSTransition
-        in={activeWindow === "writing"}
-        timeout={500}
-        unmountOnExit
-      >
-        <div className={styles.root}>
-          <Image
-            // src={URL.createObjectURL(croppedImage!)}
-            src="/imgs/shirt.jpg"
-            alt="cropped user image"
-            width={100} // width of the image file
-            height={100} // height of the image file
-            className={styles.croppedImage}
-          />
-
-          {/* <label>category:</label> */}
-          <DropDownMenu
-            name="category"
-            // value={category}
-            // onChange={(e) => setCategory(e.target.value as Category)}
-            // className={styles.category}
-          >
-            {categories.map((category) => (
-              <DropDownItem
-                key={category}
-                name={category}
-                imageSRC={"/SVG/" + category + ".svg"}
-                imageALT={"SVG Image of " + category}
-                onClick={() => setCategory(category)}
-              ></DropDownItem>
-            ))}
-          </DropDownMenu>
-          <textarea
-            required
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-          ></textarea>
-          <button>Add Blog</button>
-        </div>
-      </CSSTransition>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

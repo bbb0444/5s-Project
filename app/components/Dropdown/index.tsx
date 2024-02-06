@@ -12,18 +12,22 @@ type DropDownItemProps = {
 };
 
 type DropDownMenuProps = {
-  name: string;
+  selected: string;
   children: React.ReactNode;
 };
 
 function DropDownMenu(props: DropDownMenuProps) {
   const [Open, setOpen] = React.useState(false);
 
+  const selectedItem = React.Children.toArray(props.children).find(
+    (child) =>
+      (child as React.ReactElement<DropDownItemProps>).props.name ===
+      props.selected
+  );
+
   return (
     <div onClick={() => setOpen(!Open)}>
-      <div className={styles.button}>
-        <h1>{props.name}</h1>
-      </div>
+      <div className={styles.button}>{selectedItem}</div>
 
       {Open && props.children}
     </div>
