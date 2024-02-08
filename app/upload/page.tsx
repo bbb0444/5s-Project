@@ -9,6 +9,9 @@ import ImageCropper from "../components/ImageCropper";
 import { DropDownMenu, DropDownItem } from "../components/Dropdown";
 
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+
+import { Category } from "../lib/types";
 
 function Index() {
   // photo
@@ -30,7 +33,6 @@ function Index() {
   // writing
   const searchParams = useSearchParams();
 
-  type Category = "eye" | "ear" | "mouth" | "nose" | "hand";
   const categories: Category[] = ["eye", "ear", "mouth", "nose", "hand"];
 
   type Windows = "camera" | "writing";
@@ -129,7 +131,7 @@ function Index() {
   }, [searchParams]);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.main}>
       <AnimatePresence initial={true} mode="popLayout">
         {activeWindow === "camera" && (
           <motion.div
@@ -141,6 +143,9 @@ function Index() {
               exit: { duration: 0.75, delay: 1, type: "spring" }, // delay for exiting animation
             }}
           >
+            <Link href="/">
+              <h1>back</h1>
+            </Link>
             <div className={styles.cameraContainer}>
               <Image
                 src={"/SVG/upload.svg"}

@@ -27,7 +27,9 @@ function DropDownMenu(props: DropDownMenuProps) {
 
   return (
     <div onClick={() => setOpen(!Open)}>
-      <div className={styles.button}>{selectedItem}</div>
+      <div className={styles.button}>
+        {selectedItem ? selectedItem : <h1>select category</h1>}
+      </div>
 
       {Open && props.children}
     </div>

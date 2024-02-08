@@ -1,87 +1,75 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./Header.module.scss";
-import ScrollingText from "../ScrollingText";
 import CameraSearch from "../CameraSearch";
+
+const images = [
+  {
+    src: "/SVG/Eye.svg",
+    alt: "black and white print of an eye",
+    width: 150,
+    height: 150,
+    text: "eye",
+  },
+  {
+    src: "/SVG/Ear.svg",
+    alt: "black and white print of an ear",
+    width: 100,
+    height: 100,
+    text: "ear",
+  },
+  {
+    src: "/SVG/Mouth.svg",
+    alt: "black and white print of a mouth",
+    width: 120,
+    height: 120,
+    text: "mouth",
+  },
+  {
+    src: "/SVG/Hand.svg",
+    alt: "black and white print of a hand",
+    width: 100,
+    height: 100,
+    text: "hand",
+  },
+  {
+    src: "/SVG/Nose.svg",
+    alt: "black and white print of a nose",
+    width: 90,
+    height: 90,
+    text: "nose",
+  },
+];
 
 const Header = () => {
   return (
-    <header>
-      <nav>
-        <ul className={styles.column}>
-          <li className={styles.container}>
-            <Image
-              src={"/SVG/Eye.svg"}
-              alt="black and white print of a eye"
-              width={150} // width of the image file
-              height={150} // height of the image file
-              className={styles.image}
-            />
-            <div className={styles.dropContent}>
-              <CameraSearch text="eye"></CameraSearch>
+    <div className={styles.main}>
+      <ul className={styles.square}>
+        <div className={styles.column}>
+          {images.map((image, index) => (
+            <div className={styles.container} key={index}>
+              <li
+                key={index}
+                style={{ "--i": index + 1 } as React.CSSProperties}
+              >
+                <div className={styles.imageBox}>
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    width={image.width}
+                    height={image.height}
+                    className={styles.image}
+                  />
+                </div>
+                <div className={styles.dropContent}>
+                  <CameraSearch text={image.text}></CameraSearch>
+                </div>
+              </li>
             </div>
-          </li>
-
-          <li className={styles.container}>
-            <Image
-              src={"/SVG/Ear.svg"}
-              alt="black and white print of a ear"
-              width={100} // width of the image file
-              height={100} // height of the image file
-              className={styles.image}
-            />
-            <div className={styles.dropContent}>
-              {/* <div className={styles.isolate}>
-                <div className={styles.grain}>
-                  <div className={styles.overlay}> */}
-              <CameraSearch text="ear"></CameraSearch>
-            </div>
-            {/* </div>
-              </div>
-            </div> */}
-          </li>
-
-          <li className={styles.container}>
-            <Image
-              src={"/SVG/Mouth.svg"}
-              alt="black and white print of a mouth"
-              width={120} // width of the image file
-              height={120} // height of the image file
-              className={styles.image}
-            />
-            <div className={styles.dropContent}>
-              <CameraSearch text="mouth"></CameraSearch>
-            </div>
-          </li>
-
-          <li className={styles.container}>
-            <Image
-              src={"/SVG/Hand.svg"}
-              alt="black and white print of a hand"
-              width={110} // width of the image file
-              height={110} // height of the image file
-              className={styles.image}
-            />
-            <div className={styles.dropContent}>
-              <CameraSearch text="hand"></CameraSearch>
-            </div>
-          </li>
-
-          <li className={styles.container}>
-            <Image
-              src={"/SVG/Nose.svg"}
-              alt="black and white print of a nose"
-              width={105} // width of the image file
-              height={105} // height of the image file
-              className={styles.image}
-            />
-            <div className={styles.dropContent}>
-              <CameraSearch text="nose"></CameraSearch>
-            </div>
-          </li>
-        </ul>
-      </nav>
-    </header>
+          ))}
+        </div>
+      </ul>
+    </div>
   );
 };
 

@@ -7,11 +7,11 @@ import "./globals.scss";
 export default function Home() {
   return (
     <main className="">
-      <div className="">
-        {/* <div className="w-1/3 min-w-40"> */}
-        <ScrollingText />
-        <Header></Header>
-      </div>
+      {/* <h1>yoawdawdaw</h1> */}
+      <ScrollingText />
+      <Header />
+      {/* <div className="w-1/3 min-w-40"> */}
+
       {/* <div className="w-2/3 min-w-80 p-6 flex">
         <div className="flex-1">
         </div>

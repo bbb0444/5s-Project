@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
 import styles from "./CameraSearch.module.scss";
@@ -13,23 +11,7 @@ interface Props {
   text: string;
 }
 
-const handleCameraClick = (router: any, text: String) => {
-  // Start the animation here
-  // Delay the redirection
-  setTimeout(() => {
-    router.push(
-      {
-        pathname: "/upload",
-        query: { text: text },
-      },
-      "/upload"
-    );
-  }, 1000); // Adjust the delay to match the duration of your animation
-};
-
 const Index: React.FC<Props> = ({ text }) => {
-  const router = useRouter();
-
   return (
     <div className={styles.container}>
       <div className={styles.camera}>
@@ -45,16 +27,15 @@ const Index: React.FC<Props> = ({ text }) => {
       </div>
       <div className={styles.text}>{text}</div>
       <div className={styles.search}>
-        {/* <Link href="/upload"> */}
-        <Image
-          src={"/SVG/search.svg"}
-          alt="icon of magnifying glass"
-          width={70} // width of the image file
-          height={70} // height of the image file
-          objectFit="contain"
-          onClick={() => handleCameraClick(router, text)}
-        />
-        {/* </Link> */}
+        <Link href={{ pathname: "/posts", query: { category: text } }}>
+          <Image
+            src={"/SVG/search.svg"}
+            alt="icon of magnifying glass"
+            width={70} // width of the image file
+            height={70} // height of the image file
+            objectFit="contain"
+          />
+        </Link>
       </div>
     </div>
   );
