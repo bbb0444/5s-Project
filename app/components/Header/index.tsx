@@ -1,12 +1,23 @@
 "use client";
 
-import React from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  memo,
+  FC,
+  createContext,
+} from "react";
 import Image from "next/image";
 import styles from "./Header.module.scss";
 import CameraSearch from "../CameraSearch";
-import { motion } from "framer-motion";
+import { motion, useAnimate } from "framer-motion";
 
-const images = [
+import { ImageProps } from "./types";
+import ImgMotionDiv from "./ImgMotionDiv";
+
+const images: ImageProps[] = [
   {
     src: "/SVG/Eye.svg",
     alt: "black and white print of an eye",
@@ -48,15 +59,24 @@ const numImages = images.length;
 const randomXY = () => (Math.random() - 0.5) * 20; // smaller range for subtle floating effect
 
 const Header = () => {
-  const parentRef = React.useRef<HTMLDivElement>(null);
-  const [radius, setRadius] = React.useState(0);
-  const [parentWidth, setParentWidth] = React.useState(0);
-  const [parentHeight, setParentHeight] = React.useState(0);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [radius, setRadius] = useState(0);
+  const [parentWidth, setParentWidth] = useState(0);
+  const [parentHeight, setParentHeight] = useState(0);
+
+  const selectedImage = useRef<ImageProps | null>(null);
+  const [scope, animate] = useAnimate();
+
+  const setSelectedImageCB = useCallback((image: ImageProps | null) => {
+    selectedImage.current = image;
+    console.log(selectedImage.current);
+  }, []);
 
   // Update the radius when the component mounts and when the window resizes
-  React.useEffect(() => {
+  useEffect(() => {
     const updateRadius = () => {
       if (parentRef.current) {
+        // console.log(parentRef.current.clientWidth);
         setRadius(parentRef.current.offsetWidth * 0.5); // 30% of the parent container's width
         setParentWidth(parentRef.current.offsetWidth);
         setParentHeight(parentRef.current.offsetHeight);
@@ -72,68 +92,31 @@ const Header = () => {
   }, []);
 
   return (
-    <div className={styles.main}>
-      <ul className={styles.square}>
-        <div
-          className={styles.column}
-          // style={{
-          //   transform: `rotate(${rotationAngle}deg)`,
-          //   transformOrigin: "50% 50%",
-          // }}
-          ref={parentRef}
-        >
+    <div className={styles.main} ref={scope}>
+      <ul className={styles.column}>
+        <div className={styles.square} ref={parentRef}>
           {images.map((image, index) => {
             const angle = ((2 * Math.PI) / numImages) * index - 360 / numImages;
             const initialX =
               parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
             const initialY =
               parentHeight / 2 + radius * Math.sin(angle) - image.height / 2;
+            const randomX = randomXY();
+            const randomY = randomXY();
 
             return (
               <div className={styles.container} key={index}>
-                <motion.div
-                  className={styles.imageBox}
-                  // style={{
-                  //   transform: `rotate(${rotationAngle}deg)`,
-                  //   transformOrigin: "50% 50%",
-                  // }}
-                  initial={{ x: initialX, y: initialY }} // Set initial position in a circle
-                  animate={{
-                    x: [
-                      initialX,
-                      initialX + randomXY(),
-                      initialX + randomXY(),
-                      initialX + randomXY(),
-                      initialX,
-                    ],
-                    y: [
-                      initialY,
-                      initialY + randomXY(),
-                      initialY + randomXY(),
-                      initialY + randomXY(),
-                      initialY,
-                    ],
-                  }}
-                  transition={{
-                    x: {
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      duration: 5,
-                    },
-                    y: {
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      duration: 5,
-                    },
-                  }}
-                >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    width={image.width}
-                    height={image.height}
-                  />
-                </motion.div>
+                <ImgMotionDiv
+                  image={image}
+                  index={index}
+                  initialX={initialX}
+                  initialY={initialY}
+                  randomX={randomX}
+                  randomY={randomY}
+                  setSelectedImageCB={setSelectedImageCB}
+                  animate={animate}
+                  radius={radius}
+                />
               </div>
             );
           })}
