@@ -1,7 +1,11 @@
 // ImgMotionDiv.tsx
 import { FC, memo, useCallback } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import {
+  DOMKeyframesDefinition,
+  DynamicAnimationOptions,
+  motion,
+} from "framer-motion";
 import styles from "./Header.module.scss";
 import { ImageProps } from "./types";
 
@@ -14,7 +18,8 @@ interface ImgMotionDivProps {
   randomY: number;
   setSelectedImageCB: (image: ImageProps) => void;
   animate: (target: string, animation: object, options: object) => void;
-  radius: number;
+  animation: DOMKeyframesDefinition;
+  options: DynamicAnimationOptions;
 }
 
 const ImgMotionDiv: FC<ImgMotionDivProps> = ({
@@ -26,7 +31,8 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   randomY,
   setSelectedImageCB,
   animate,
-  radius,
+  animation,
+  options,
 }) => {
   const handleClick = async (event: React.MouseEvent) => {
     event.preventDefault(); // Prevent the default action of the click event
@@ -34,15 +40,8 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
 
     animate(
       `#${image.text}`, // Use the image parameter to get a reference to the correct image
-      {
-        scale: [1, 1.5],
-        x: [0, radius],
-        y: [0, radius],
-      },
-      {
-        duration: 1,
-        ease: "easeInOut",
-      }
+      animation,
+      options
     );
   };
 

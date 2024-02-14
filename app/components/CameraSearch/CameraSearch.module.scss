@@ -1,9 +1,14 @@
+@import "../../variables.scss";
+
 .container {
+  position: absolute;
   display: flex;
   justify-content: space-around; // or use 'space-between'
   align-items: center;
   width: 100%;
   height: 100%;
+
+  background-color: $black;
 }
 
 .text {
@@ -12,10 +17,10 @@
 
 .camera {
   //   transition: transform 0.3s ease;
+  width: 100%;
+  height: 100%;
 
-  &:hover {
-    transform: scale(1.1);
-  }
+  // background-color: $bg-colour;
 }
 
 .search {
@@ -23,7 +28,9 @@
   height: 100%;
   //   transition: transform 0.3s ease;
 
-  &:hover {
-    transform: scale(1.1);
-  }
+  // background-color: $bg-colour;
+}
+
+:export {
+  white: $bg-colour;
 }

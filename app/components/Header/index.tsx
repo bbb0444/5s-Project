@@ -12,10 +12,11 @@ import {
 import Image from "next/image";
 import styles from "./Header.module.scss";
 import CameraSearch from "../CameraSearch";
-import { motion, useAnimate } from "framer-motion";
+import { PanInfo, motion, useAnimate } from "framer-motion";
 
 import { ImageProps } from "./types";
 import ImgMotionDiv from "./ImgMotionDiv";
+import { init } from "next/dist/compiled/webpack/webpack";
 
 const images: ImageProps[] = [
   {
@@ -67,9 +68,16 @@ const Header = () => {
   const selectedImage = useRef<ImageProps | null>(null);
   const [scope, animate] = useAnimate();
 
+  const [rotation, setRotation] = useState(0);
+  const [state, setState] = useState("home");
+
   const setSelectedImageCB = useCallback((image: ImageProps | null) => {
     selectedImage.current = image;
     console.log(selectedImage.current);
+
+    setTimeout(() => {
+      setState("selected");
+    }, 500);
   }, []);
 
   // Update the radius when the component mounts and when the window resizes
@@ -82,7 +90,6 @@ const Header = () => {
         setParentHeight(parentRef.current.offsetHeight);
       }
     };
-
     updateRadius();
     window.addEventListener("resize", updateRadius);
 
@@ -91,38 +98,123 @@ const Header = () => {
     };
   }, []);
 
-  return (
-    <div className={styles.main} ref={scope}>
-      <ul className={styles.column}>
-        <div className={styles.square} ref={parentRef}>
-          {images.map((image, index) => {
-            const angle = ((2 * Math.PI) / numImages) * index - 360 / numImages;
-            const initialX =
-              parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
-            const initialY =
-              parentHeight / 2 + radius * Math.sin(angle) - image.height / 2;
-            const randomX = randomXY();
-            const randomY = randomXY();
+  // const handleDragStart = (
+  //   event: MouseEvent | TouchEvent | PointerEvent,
+  //   info: PanInfo
+  // ) => {
+  //   console.log("drag start");
+  //   console.log(info);
+  //   console.log(event);
+  // };
+  // const handleDragEnd = (
+  //   event: MouseEvent | TouchEvent | PointerEvent,
+  //   info: PanInfo
+  // ) => {
+  //   console.log("drag end");
+  //   console.log(info);
+  //   console.log(event);
+  // };
 
-            return (
-              <div className={styles.container} key={index}>
-                <ImgMotionDiv
-                  image={image}
-                  index={index}
-                  initialX={initialX}
-                  initialY={initialY}
-                  randomX={randomX}
-                  randomY={randomY}
-                  setSelectedImageCB={setSelectedImageCB}
-                  animate={animate}
-                  radius={radius}
-                />
-              </div>
-            );
-          })}
+  interface MainComponentProps {
+    images: ImageProps[];
+    parentWidth: number;
+    parentHeight: number;
+    radius: number;
+    setSelectedImageCB: (image: ImageProps | null) => void;
+    animate: any;
+  }
+
+  const MainComponent: FC<MainComponentProps> = memo(
+    ({
+      images,
+      parentWidth,
+      parentHeight,
+      radius,
+      setSelectedImageCB,
+      animate,
+    }) => {
+      return (
+        <div className={styles.main} ref={scope}>
+          <ul className={styles.icons}>
+            <motion.div
+              // drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              style={{ rotate: rotation }}
+              // onDragStart={handleDragStart}
+              // onDragEnd={handleDragEnd}
+              className={styles.circle}
+              ref={parentRef}
+            >
+              {images.map((image, index) => {
+                const angle =
+                  ((2 * Math.PI) / numImages) * index - 360 / numImages;
+                const initialX =
+                  parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
+                const initialY =
+                  parentHeight / 2 +
+                  radius * Math.sin(angle) -
+                  image.height / 2;
+                const randomX = randomXY();
+                const randomY = randomXY();
+
+                const middleX = radius / 2 - initialX - image.height * 2; //not exactly middle
+                const middleY = radius / 2 - initialY - image.width * 2;
+
+                return (
+                  <div className={styles.container} key={index}>
+                    <ImgMotionDiv
+                      image={image}
+                      index={index}
+                      initialX={initialX}
+                      initialY={initialY}
+                      randomX={randomX}
+                      randomY={randomY}
+                      setSelectedImageCB={setSelectedImageCB}
+                      animate={animate}
+                      animation={{
+                        scale: [1, 800],
+                        // transform: ["skewY(0deg)", "skewY(45deg)", "skewY(0deg)"],
+                        x: [0, middleX],
+                        y: [0, middleY],
+                      }}
+                      options={{
+                        duration: 2,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </motion.div>
+          </ul>
         </div>
-      </ul>
-    </div>
+      );
+    }
+  );
+
+  MainComponent.displayName = "MainComponent";
+
+  return (
+    <>
+      {selectedImage.current != null && (
+        <motion.div
+          className={styles.menu}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <CameraSearch text={selectedImage.current.text} />
+        </motion.div>
+      )}
+      <MainComponent
+        images={images}
+        parentWidth={parentWidth}
+        parentHeight={parentHeight}
+        radius={radius}
+        setSelectedImageCB={setSelectedImageCB}
+        animate={animate}
+      />
+    </>
   );
 };
 

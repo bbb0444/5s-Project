@@ -22,6 +22,7 @@ const Index: React.FC<Props> = ({ text }) => {
             width={100} // width of the image file
             height={100} // height of the image file
             objectFit="contain"
+            color={styles.white}
           />
         </Link>
       </div>
