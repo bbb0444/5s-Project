@@ -1,6 +1,6 @@
 @import "../../variables.scss";
 
-$debug: false;
+$debug: true;
 
 .main {
   padding: 2rem;
@@ -12,12 +12,21 @@ $debug: false;
   width: 100%;
   height: 100%;
 
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // align-items: center;
+}
+
+.usable {
+  width: 100%;
+  height: 100%;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
-
 .grain {
   filter: contrast(100%) brightness(100%);
   background: url("/SVG/grain.svg"),
@@ -49,8 +58,7 @@ $debug: false;
 }
 
 .image {
-  // pointer-events: all;
-
+  z-index: 2;
   // position: absolute;
   // left: 50%;
   // transform: rotate(calc((360deg / 5) * var(--i)));
@@ -69,6 +77,8 @@ $debug: false;
 }
 
 .imageBox {
+  position: absolute;
+
   //for rotating the images back the right way, put as parent of image
 
   // pointer-events: all;
@@ -81,7 +91,7 @@ $debug: false;
   }
 }
 
-.square {
+.circle {
   position: relative;
   // top: 50%;
   // left: 50%;
@@ -94,10 +104,10 @@ $debug: false;
   max-width: 600px;
   max-height: 600px;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: space-between;
+  // align-items: center;
 
   // min-width: 300px;
 
@@ -110,6 +120,9 @@ $debug: false;
 .container {
   position: absolute;
   left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   // // // left: calc(50% - 500px);
   // // left: -72.5%;
   // // height: 100%;

@@ -1,5 +1,5 @@
 // ImgMotionDiv.tsx
-import { FC, memo, useCallback } from "react";
+import { FC, RefObject, memo, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import styles from "./Header.module.scss";
@@ -15,6 +15,7 @@ interface ImgMotionDivProps {
   setSelectedImageCB: (image: ImageProps) => void;
   animate: (target: string, animation: object, options: object) => void;
   radius: number;
+  parent: RefObject<HTMLDivElement>;
 }
 
 const ImgMotionDiv: FC<ImgMotionDivProps> = ({
@@ -27,6 +28,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   setSelectedImageCB,
   animate,
   radius,
+  parent,
 }) => {
   const handleClick = async (event: React.MouseEvent) => {
     event.preventDefault(); // Prevent the default action of the click event
@@ -45,6 +47,13 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
       }
     );
   };
+
+  useEffect(() => {
+    console.log(parent.current?.clientTop!);
+    console.log(parent.current?.clientLeft!);
+    console.log(parent.current?.clientWidth!);
+    console.log(parent.current?.clientHeight!);
+  }, []);
 
   return (
     <motion.div
@@ -85,16 +94,24 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
         },
       }}
     >
-      <div className={styles.imageBox} id={`${image.text}-wrapper`}>
-        <Image
-          id={image.text}
-          src={image.src}
-          alt={image.alt}
-          width={image.width}
-          height={image.height}
-          onClick={handleClick}
-        />
-      </div>
+      {/* <div className={styles.imageBox} id={`${image.text}-wrapper`}> */}
+      <motion.img
+        className={styles.imageBox}
+        drag={true}
+        dragConstraints={{
+          top: parent.current?.clientTop! - initialY - image.height / 2,
+          left: parent.current?.clientLeft! - initialX - image.width / 2,
+          right: parent.current?.clientWidth! - initialX - image.width / 2,
+          bottom: parent.current?.clientHeight! - initialY - image.height / 2,
+        }}
+        id={image.text}
+        src={image.src}
+        alt={image.alt}
+        width={image.width}
+        height={image.height}
+        // onClick={handleClick}
+      ></motion.img>
+      {/* </div> */}
     </motion.div>
   );
 };

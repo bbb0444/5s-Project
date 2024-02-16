@@ -57,6 +57,7 @@ const images: ImageProps[] = [
 
 const numImages = images.length;
 const randomXY = () => (Math.random() - 0.5) * 20; // smaller range for subtle floating effect
+const scale = 4;
 
 const Header = () => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -93,35 +94,43 @@ const Header = () => {
 
   return (
     <div className={styles.main} ref={scope}>
-      <ul className={styles.column}>
-        <div className={styles.square} ref={parentRef}>
-          {images.map((image, index) => {
-            const angle = ((2 * Math.PI) / numImages) * index - 360 / numImages;
-            const initialX =
-              parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
-            const initialY =
-              parentHeight / 2 + radius * Math.sin(angle) - image.height / 2;
-            const randomX = randomXY();
-            const randomY = randomXY();
+      <div className={styles.usable}>
+        <ul className={styles.column}>
+          <div className={styles.circle} ref={parentRef}>
+            <div className={styles.container}>
+              {images.map((image, index) => {
+                const angle =
+                  ((2 * Math.PI) / numImages) * index - 360 / numImages;
+                const initialX =
+                  parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
+                const initialY =
+                  parentHeight / 2 +
+                  radius * Math.sin(angle) -
+                  image.height / 2;
+                const randomX = randomXY();
+                const randomY = randomXY();
 
-            return (
-              <div className={styles.container} key={index}>
-                <ImgMotionDiv
-                  image={image}
-                  index={index}
-                  initialX={initialX}
-                  initialY={initialY}
-                  randomX={randomX}
-                  randomY={randomY}
-                  setSelectedImageCB={setSelectedImageCB}
-                  animate={animate}
-                  radius={radius}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </ul>
+                console.log(image.text, initialX, initialY);
+                return (
+                  <ImgMotionDiv
+                    key={index}
+                    image={image}
+                    index={index}
+                    initialX={initialX}
+                    initialY={initialY}
+                    randomX={randomX}
+                    randomY={randomY}
+                    setSelectedImageCB={setSelectedImageCB}
+                    animate={animate}
+                    radius={radius}
+                    parent={parentRef}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </ul>
+      </div>
     </div>
   );
 };
