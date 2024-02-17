@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="">
       {/* <h1>yoawdawdaw</h1> */}
-      <ScrollingText />
+      {/* <ScrollingText /> */}
       <Header />
       {/* <div className="w-1/3 min-w-40"> */}
 

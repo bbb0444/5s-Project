@@ -8,11 +8,12 @@ import {
   memo,
   FC,
   createContext,
+  RefObject,
 } from "react";
 import Image from "next/image";
 import styles from "./Header.module.scss";
 import CameraSearch from "../CameraSearch";
-import { motion, useAnimate } from "framer-motion";
+import { PanInfo, motion, useAnimate } from "framer-motion";
 
 import { ImageProps } from "./types";
 import ImgMotionDiv from "./ImgMotionDiv";
@@ -67,17 +68,52 @@ const Header = () => {
   const selectedImage = useRef<ImageProps | null>(null);
   const [scope, animate] = useAnimate();
 
+  const [pointerPosition, setPointerPosition] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+
+  const centerDiv = useRef<HTMLDivElement>(null);
+
   const setSelectedImageCB = useCallback((image: ImageProps | null) => {
     selectedImage.current = image;
     console.log(selectedImage.current);
   }, []);
+
+  const handleDragFinish = (
+    event: PointerEvent,
+    info: PanInfo,
+    imageRef: RefObject<HTMLImageElement>,
+    image: ImageProps
+  ) => {
+    const imagePos = {
+      x: event.clientX - event.offsetX,
+      y: event.clientY - event.offsetY,
+    };
+
+    const imageBounds = imageRef.current?.getBoundingClientRect();
+    const centerDivBounds = centerDiv.current?.getBoundingClientRect();
+
+    if (!imageBounds || !centerDivBounds) return;
+
+    const intersects =
+      imageBounds.right > centerDivBounds.left &&
+      imageBounds.left < centerDivBounds.right &&
+      imageBounds.bottom > centerDivBounds.top &&
+      imageBounds.top < centerDivBounds.bottom;
+
+    if (intersects) {
+      console.log("The image intersects with the center div");
+      setSelectedImageCB(image);
+    }
+  };
 
   // Update the radius when the component mounts and when the window resizes
   useEffect(() => {
     const updateRadius = () => {
       if (parentRef.current) {
         // console.log(parentRef.current.clientWidth);
-        setRadius(parentRef.current.offsetWidth * 0.5); // 30% of the parent container's width
+        setRadius(parentRef.current.offsetWidth * 0.5);
         setParentWidth(parentRef.current.offsetWidth);
         setParentHeight(parentRef.current.offsetHeight);
       }
@@ -93,35 +129,55 @@ const Header = () => {
 
   return (
     <div className={styles.main} ref={scope}>
-      <ul className={styles.column}>
-        <div className={styles.square} ref={parentRef}>
-          {images.map((image, index) => {
-            const angle = ((2 * Math.PI) / numImages) * index - 360 / numImages;
-            const initialX =
-              parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
-            const initialY =
-              parentHeight / 2 + radius * Math.sin(angle) - image.height / 2;
-            const randomX = randomXY();
-            const randomY = randomXY();
+      <div
+        style={{
+          position: "absolute",
+          top: `${pointerPosition.y}px`,
+          left: `${pointerPosition.x}px`,
+          width: "10px",
+          height: "10px",
+          backgroundColor: "red",
+        }}
+      ></div>
+      <div className={styles.usable}>
+        <ul className={styles.column}>
+          <div className={styles.circle} ref={parentRef}>
+            <motion.div className={styles.container}>
+              <div className={styles.center} ref={centerDiv} />
+              {images.map((image, index) => {
+                const angle =
+                  ((2 * Math.PI) / numImages) * index - 360 / numImages;
+                const initialX =
+                  parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
+                const initialY =
+                  parentHeight / 2 +
+                  radius * Math.sin(angle) -
+                  image.height / 2;
+                const randomX = randomXY();
+                const randomY = randomXY();
 
-            return (
-              <div className={styles.container} key={index}>
-                <ImgMotionDiv
-                  image={image}
-                  index={index}
-                  initialX={initialX}
-                  initialY={initialY}
-                  randomX={randomX}
-                  randomY={randomY}
-                  setSelectedImageCB={setSelectedImageCB}
-                  animate={animate}
-                  radius={radius}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </ul>
+                console.log(image.text, initialX, initialY);
+                return (
+                  <ImgMotionDiv
+                    key={index}
+                    image={image}
+                    index={index}
+                    initialX={initialX}
+                    initialY={initialY}
+                    randomX={randomX}
+                    randomY={randomY}
+                    setSelectedImageCB={setSelectedImageCB}
+                    animate={animate}
+                    radius={radius}
+                    parent={parentRef}
+                    onDragFinish={handleDragFinish}
+                  />
+                );
+              })}
+            </motion.div>
+          </div>
+        </ul>
+      </div>
     </div>
   );
 };
