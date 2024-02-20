@@ -15,6 +15,11 @@
 :root {
   font-size: 16px;
   background-color: $bg-colour;
+
+  --bg-colour: #{$bg-colour};
+  --main-text-colour: #{$main-text-colour};
+  --black: #{$black};
+  --secondary-text-colour: #{$secondary-text-colour};
 }
 
 main {
@@ -23,66 +28,3 @@ main {
   height: 100vh;
   height: 100svh;
 }
-
-.home {
-  // position: inherit;
-  // position: absolute;
-  // top: 50%;
-  // left: 50%;
-  // transform: translate(-50%, -50%);
-}
-
-// body {
-//   filter: contrast(170%) brightness(1000%);
-//   background: url("/SVG/grain.svg"),
-//     linear-gradient(0deg, rgba(0, 0, 255, 1), rgba(0, 0, 0, 0));
-// }
-
-// body {
-//   background-image: url("/imgs/back1.png");
-//   animation: changeBackground 3s linear infinite;
-//   /* Scale the background image to cover the entire body */
-//   background-size: cover;
-//   background-position: center;
-//   background-repeat: no-repeat;
-// }
-
-// @keyframes changeBackground {
-//   /* At the start of the animation, use the first image */
-//   0% {
-//     background-image: url("/imgs/back1.png");
-//   }
-
-//   /* At the 33.33% mark, transition to the second image */
-//   33.33% {
-//     background-image: url("/imgs/back2.png");
-//   }
-
-//   /* At the 66.66% mark, transition to the third image */
-//   66.66% {
-//     background-image: url("/imgs/back3.png");
-//   }
-
-//   /* At the end of the animation, go back to the first image */
-//   100% {
-//     background-image: url("/imgs/back1.png");
-//   }
-// }
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}  */

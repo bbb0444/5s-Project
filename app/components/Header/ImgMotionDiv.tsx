@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PanInfo, motion } from "framer-motion";
 import styles from "./Header.module.scss";
 import { ImageProps } from "./types";
+import BlobSVG from "./BlobSVG";
 
 interface ImgMotionDivProps {
   image: ImageProps;
@@ -116,7 +117,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
         },
       }}
     >
-      <motion.img
+      <motion.div
         ref={imageRef}
         className={styles.imageBox}
         drag={true}
@@ -126,13 +127,25 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
         }}
         // onDrag={handleDrag}
         onDragEnd={handleDrag}
-        id={image.text}
-        src={image.src}
-        alt={image.alt}
-        width={image.width}
-        height={image.height}
-        // onClick={handleClick}
-      ></motion.img>
+      >
+        <img
+          id={image.text}
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          className={styles.image}
+        />
+        {/* <div className={styles.imageBlobSVG}>
+          <BlobSVG
+            color1={"rgb(120,0,0)"}
+            color2={"rgb(220,0,0)"}
+            numPoints={5}
+            width={250}
+            height={250}
+          />
+        </div> */}
+      </motion.div>
     </motion.div>
   );
 };

@@ -12,11 +12,13 @@ import {
 } from "react";
 import Image from "next/image";
 import styles from "./Header.module.scss";
+import { colours } from "../../colours";
 import CameraSearch from "../CameraSearch";
 import { PanInfo, motion, useAnimate } from "framer-motion";
 
 import { ImageProps } from "./types";
 import ImgMotionDiv from "./ImgMotionDiv";
+import BlobSVG from "./BlobSVG";
 
 const images: ImageProps[] = [
   {
@@ -74,6 +76,7 @@ const Header = () => {
   }>({ x: 0, y: 0 });
 
   const centerDiv = useRef<HTMLDivElement>(null);
+  const outerSVG = useRef<SVGSVGElement>(null);
 
   const setSelectedImageCB = useCallback((image: ImageProps | null) => {
     selectedImage.current = image;
@@ -141,9 +144,13 @@ const Header = () => {
       ></div>
       <div className={styles.usable}>
         <ul className={styles.column}>
+          <BlobSVG color1={"green"} color2={"white"} numPoints={10} />
           <div className={styles.circle} ref={parentRef}>
+            <div className={styles.center} ref={centerDiv}>
+              <BlobSVG color1={"green"} color2={"white"} numPoints={5} />
+            </div>
+            awidohawodiawdhaw
             <motion.div className={styles.container}>
-              <div className={styles.center} ref={centerDiv} />
               {images.map((image, index) => {
                 const angle =
                   ((2 * Math.PI) / numImages) * index - 360 / numImages;
@@ -156,7 +163,7 @@ const Header = () => {
                 const randomX = randomXY();
                 const randomY = randomXY();
 
-                console.log(image.text, initialX, initialY);
+                //console.log(image.text, initialX, initialY);
                 return (
                   <ImgMotionDiv
                     key={index}

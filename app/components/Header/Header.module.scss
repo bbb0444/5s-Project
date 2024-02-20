@@ -1,6 +1,6 @@
 @import "../../variables.scss";
 
-$debug: true;
+$debug: false;
 
 .main {
   padding: 2rem;
@@ -16,6 +16,7 @@ $debug: true;
   // flex-direction: row;
   // justify-content: space-between;
   // align-items: center;
+  background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
 }
 
 .usable {
@@ -58,18 +59,20 @@ $debug: true;
 }
 
 .image {
+  position: relative;
   z-index: 2;
+  pointer-events: none;
   // position: absolute;
   // left: 50%;
   // transform: rotate(calc((360deg / 5) * var(--i)));
 
   // transform-origin: 0rem 17.5rem;
 
-  @media (max-width: 330px) {
-    // Set the breakpoint
-    width: 70%; // Change the size of the images
-    height: auto;
-  }
+  // @media (max-width: 330px) {
+  //   // Set the breakpoint
+  //   width: 70%; // Change the size of the images
+  //   height: auto;
+  // }
 
   @if $debug {
     border: 1px solid yellow;
@@ -78,6 +81,7 @@ $debug: true;
 
 .imageBox {
   position: absolute;
+  z-index: 1;
 
   //for rotating the images back the right way, put as parent of image
 
@@ -88,6 +92,17 @@ $debug: true;
   // transform-origin: 17.5rem 35rem;
   @if $debug {
     border: 1px solid gold;
+  }
+}
+
+.imageBlobSVG {
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  @if $debug {
+    border: 1px solid red;
   }
 }
 
@@ -118,7 +133,7 @@ $debug: true;
   }
 }
 .container {
-  position: absolute;
+  // position: absolute;
   left: 0;
   top: 0;
   width: 100%;
@@ -149,40 +164,12 @@ $debug: true;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 25%;
-  height: 25%;
+  // width: 25%;
+  // height: 25%;
+  width: 100%;
+  height: 100%;
   // border-radius: 50%;
-  border: 1px solid $black;
-}
-
-.dropContent:hover {
-  opacity: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.dropContent {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  // display: none;
-  // transform: scaleX(1);
-  font-size: clamp(3rem, 10vw, 5rem);
-  color: $secondary-text-colour;
-  // background-color: green;
-}
-
-@keyframes growRight {
-  0% {
-    opacity: 0;
-    transform: scaleX(0);
-  }
-  // 80% {
-  //   opacity: 0.5;
-  //   transform: scaleX(0.8);
-  // }
-  100% {
-    opacity: 1;
-    transform: scaleX(1);
+  @if $debug {
+    border: 1px solid $black;
   }
 }
