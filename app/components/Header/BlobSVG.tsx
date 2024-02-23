@@ -17,13 +17,34 @@ function BlobSVG({ color1, color2, numPoints, width, height }: BlobSVGProps) {
   const path1 = useRef<SVGPathElement>(null);
   const [gradientId, setGradientId] = useState("");
   const [center, setCenter] = useState({ x: 0, y: 0 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useLayoutEffect(() => {
     setGradientId(uuidv4());
+
+    // Set the initial dimensions
+    if (outerSVG.current) {
+      const width = outerSVG.current.getBoundingClientRect().width;
+      const height = outerSVG.current.getBoundingClientRect().height;
+      setCenter({ x: width / 2, y: height / 2 });
+      setDimensions({ width, height });
+
+      gsap.fromTo(
+        outerSVG.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 1 }
+      );
+    }
+
     const updateRadius = () => {
       if (outerSVG.current) {
-        const { width, height } = outerSVG.current.getBoundingClientRect();
-        setCenter({ x: width / 2, y: height / 2 });
+        const width = outerSVG.current.getBoundingClientRect().width;
+        const height = outerSVG.current.getBoundingClientRect().height;
+        console.log(dimensions.width, width, dimensions.height, height);
+        if (dimensions.width != width) {
+          setCenter({ x: width / 2, y: height / 2 });
+          setDimensions({ width, height });
+        }
       }
     };
 
@@ -33,7 +54,7 @@ function BlobSVG({ color1, color2, numPoints, width, height }: BlobSVGProps) {
     return () => {
       window.removeEventListener("resize", updateRadius);
     };
-  }, []);
+  }, []); // No dependencies
 
   type options = {
     element: SVGPathElement | null;

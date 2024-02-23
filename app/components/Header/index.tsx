@@ -9,6 +9,7 @@ import {
   FC,
   createContext,
   RefObject,
+  useLayoutEffect,
 } from "react";
 import Image from "next/image";
 import styles from "./Header.module.scss";
@@ -16,9 +17,10 @@ import { colours } from "../../colours";
 import CameraSearch from "../CameraSearch";
 import { PanInfo, motion, useAnimate } from "framer-motion";
 
-import { ImageProps } from "./types";
+import { ImageProps, Position, Grid, GridCell } from "./types";
 import ImgMotionDiv from "./ImgMotionDiv";
 import BlobSVG from "./BlobSVG";
+import { getGrid } from "./util";
 
 const images: ImageProps[] = [
   {
@@ -75,11 +77,61 @@ const Header = () => {
     y: number;
   }>({ x: 0, y: 0 });
 
-  const centerDiv = useRef<HTMLDivElement>(null);
+  const centerRef = useRef<HTMLDivElement>(null);
+  const centerRefBounds = useRef<HTMLDivElement>(null);
   const outerSVG = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const Grid = useRef<Grid>();
+
+  const getRandomPos = () => {
+    console.log(Grid);
+    const position: Position = Grid.current!.getRandomGridCellPos();
+    return position;
+  };
+
+  const centerRefLockPos = () => {
+    const center = centerRef.current?.getBoundingClientRect();
+    if (center) {
+      return {
+        x: center.left + center.width / 2,
+        y: center.top + center.height / 2,
+      };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const centerRefLock = centerRefLockPos();
+  console.log("lock", centerRefLock);
+
+  function intersectsRef(imageRef: RefObject<HTMLImageElement>) {
+    const imageBounds = imageRef.current?.getBoundingClientRect();
+    const centerDivBounds = centerRef.current?.getBoundingClientRect();
+
+    if (!imageBounds || !centerDivBounds) return false;
+
+    return (
+      imageBounds.right > centerDivBounds.left &&
+      imageBounds.left < centerDivBounds.right &&
+      imageBounds.bottom > centerDivBounds.top &&
+      imageBounds.top < centerDivBounds.bottom
+    );
+  }
 
   const setSelectedImageCB = useCallback((image: ImageProps | null) => {
     selectedImage.current = image;
+
+    animate(
+      "#c1",
+      {
+        scale: 20,
+      },
+      {
+        duration: 1,
+        ease: "easeInOut",
+      }
+    );
+
     console.log(selectedImage.current);
   }, []);
 
@@ -87,7 +139,8 @@ const Header = () => {
     event: PointerEvent,
     info: PanInfo,
     imageRef: RefObject<HTMLImageElement>,
-    image: ImageProps
+    image: ImageProps,
+    end: boolean
   ) => {
     const imagePos = {
       x: event.clientX - event.offsetX,
@@ -95,24 +148,24 @@ const Header = () => {
     };
 
     const imageBounds = imageRef.current?.getBoundingClientRect();
-    const centerDivBounds = centerDiv.current?.getBoundingClientRect();
+    const centerDivBounds = centerRef.current?.getBoundingClientRect();
 
-    if (!imageBounds || !centerDivBounds) return;
+    if (!imageBounds || !centerDivBounds) return false;
 
-    const intersects =
-      imageBounds.right > centerDivBounds.left &&
-      imageBounds.left < centerDivBounds.right &&
-      imageBounds.bottom > centerDivBounds.top &&
-      imageBounds.top < centerDivBounds.bottom;
-
-    if (intersects) {
-      console.log("The image intersects with the center div");
-      setSelectedImageCB(image);
+    if (intersectsRef(imageRef)) {
+      console.log("The image intersects with the center div", end);
+      if (end) {
+        setSelectedImageCB(image);
+      }
+      return true;
     }
+    return false;
   };
 
   // Update the radius when the component mounts and when the window resizes
   useEffect(() => {
+    Grid.current = getGrid(parentRef, centerRef, 50);
+
     const updateRadius = () => {
       if (parentRef.current) {
         // console.log(parentRef.current.clientWidth);
@@ -124,6 +177,9 @@ const Header = () => {
 
     updateRadius();
     window.addEventListener("resize", updateRadius);
+    // window.addEventListener("mousemove", (event) => {
+    //   console.log(event.clientX, event.clientY);
+    // });
 
     return () => {
       window.removeEventListener("resize", updateRadius);
@@ -132,57 +188,41 @@ const Header = () => {
 
   return (
     <div className={styles.main} ref={scope}>
-      <div
-        style={{
-          position: "absolute",
-          top: `${pointerPosition.y}px`,
-          left: `${pointerPosition.x}px`,
-          width: "10px",
-          height: "10px",
-          backgroundColor: "red",
-        }}
-      ></div>
-      <div className={styles.usable}>
+      {/* <canvas id="canvas" ref={canvasRef} className="fixed bg-slate-500" /> */}
+      <div className={styles.redSquare} />
+      <div className={styles.usable} ref={parentRef}>
         <ul className={styles.column}>
-          <BlobSVG color1={"green"} color2={"white"} numPoints={10} />
-          <div className={styles.circle} ref={parentRef}>
-            <div className={styles.center} ref={centerDiv}>
-              <BlobSVG color1={"green"} color2={"white"} numPoints={5} />
+          <div className={styles.circles}>
+            <div className={styles.c3} ref={centerRefBounds}>
+              <div className={styles.c2}>
+                {/* <BlobSVG color1={"green"} color2={"white"} numPoints={6} /> */}
+                <motion.div id="c1" className={styles.c1} ref={centerRef}>
+                  <BlobSVG color1={"white"} color2={"white"} numPoints={5} />
+                </motion.div>
+              </div>
             </div>
-            awidohawodiawdhaw
-            <motion.div className={styles.container}>
-              {images.map((image, index) => {
-                const angle =
-                  ((2 * Math.PI) / numImages) * index - 360 / numImages;
-                const initialX =
-                  parentWidth / 2 + radius * Math.cos(angle) - image.width / 2;
-                const initialY =
-                  parentHeight / 2 +
-                  radius * Math.sin(angle) -
-                  image.height / 2;
-                const randomX = randomXY();
-                const randomY = randomXY();
-
+          </div>
+          <motion.div className={styles.container}>
+            {Grid.current &&
+              images.map((image, index) => {
                 //console.log(image.text, initialX, initialY);
                 return (
                   <ImgMotionDiv
                     key={index}
                     image={image}
                     index={index}
-                    initialX={initialX}
-                    initialY={initialY}
-                    randomX={randomX}
-                    randomY={randomY}
-                    setSelectedImageCB={setSelectedImageCB}
+                    randomX={randomXY()}
+                    randomY={randomXY()}
+                    lock={centerRefLock}
                     animate={animate}
-                    radius={radius}
+                    randomPos={getRandomPos}
+                    grid={Grid.current!}
                     parent={parentRef}
                     onDragFinish={handleDragFinish}
                   />
                 );
               })}
-            </motion.div>
-          </div>
+          </motion.div>
         </ul>
       </div>
     </div>
