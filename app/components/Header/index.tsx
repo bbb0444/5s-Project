@@ -16,60 +16,30 @@ import styles from "./Header.module.scss";
 import { colours } from "../../colours";
 import CameraSearch from "../CameraSearch";
 import { PanInfo, motion, useAnimate } from "framer-motion";
-
-import { ImageProps, Position, Grid, GridCell } from "./types";
+import {
+  SenseImage,
+  SenseImages,
+  Position,
+  Grid,
+  GridCell,
+} from "../../lib/types";
 import ImgMotionDiv from "./ImgMotionDiv";
 import BlobSVG from "./BlobSVG";
 import { getGrid } from "./util";
+import { useRouter } from "next/navigation";
 
-const images: ImageProps[] = [
-  {
-    src: "/SVG/Eye.svg",
-    alt: "black and white print of an eye",
-    width: 110,
-    height: 110,
-    text: "eye",
-  },
-  {
-    src: "/SVG/Ear.svg",
-    alt: "black and white print of an ear",
-    width: 80,
-    height: 80,
-    text: "ear",
-  },
-  {
-    src: "/SVG/Mouth.svg",
-    alt: "black and white print of a mouth",
-    width: 100,
-    height: 100,
-    text: "mouth",
-  },
-  {
-    src: "/SVG/Hand.svg",
-    alt: "black and white print of a hand",
-    width: 70,
-    height: 70,
-    text: "hand",
-  },
-  {
-    src: "/SVG/Nose.svg",
-    alt: "black and white print of a nose",
-    width: 65,
-    height: 65,
-    text: "nose",
-  },
-];
-
-const numImages = images.length;
-const randomXY = () => (Math.random() - 0.5) * 20; // smaller range for subtle floating effect
+const numImages = SenseImages.length;
+const randomXY = () => (Math.random() - 0.5) * 50; // smaller range for subtle floating effect
 
 const Header = () => {
+  const router = useRouter();
+
   const parentRef = useRef<HTMLDivElement>(null);
   const [radius, setRadius] = useState(0);
   const [parentWidth, setParentWidth] = useState(0);
   const [parentHeight, setParentHeight] = useState(0);
 
-  const selectedImage = useRef<ImageProps | null>(null);
+  const selectedImage = useRef<SenseImage | null>(null);
   const [scope, animate] = useAnimate();
 
   const [pointerPosition, setPointerPosition] = useState<{
@@ -118,8 +88,11 @@ const Header = () => {
     );
   }
 
-  const setSelectedImageCB = useCallback((image: ImageProps | null) => {
+  const setSelectedImageCB = useCallback((image: SenseImage | null) => {
     selectedImage.current = image;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.backgroundColor = "white";
 
     animate(
       "#c1",
@@ -129,6 +102,10 @@ const Header = () => {
       {
         duration: 1,
         ease: "easeInOut",
+        onComplete: () => {
+          router.push(`/view/${image!.text}`);
+          // document.body.style.overflow = "auto";
+        },
       }
     );
 
@@ -139,7 +116,7 @@ const Header = () => {
     event: PointerEvent,
     info: PanInfo,
     imageRef: RefObject<HTMLImageElement>,
-    image: ImageProps,
+    image: SenseImage,
     end: boolean
   ) => {
     const imagePos = {
@@ -164,7 +141,7 @@ const Header = () => {
 
   // Update the radius when the component mounts and when the window resizes
   useEffect(() => {
-    Grid.current = getGrid(parentRef, centerRef, 50);
+    Grid.current = getGrid(parentRef, centerRef, 100);
 
     const updateRadius = () => {
       if (parentRef.current) {
@@ -204,7 +181,7 @@ const Header = () => {
           </div>
           <motion.div className={styles.container}>
             {Grid.current &&
-              images.map((image, index) => {
+              SenseImages.map((image, index) => {
                 //console.log(image.text, initialX, initialY);
                 return (
                   <ImgMotionDiv

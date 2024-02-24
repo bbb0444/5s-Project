@@ -166,7 +166,7 @@ $debug: false;
 // }
 
 .redSquare {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 50px;
@@ -201,8 +201,8 @@ $debug: false;
   left: 50%;
   transform: translate(-50%, -50%);
 
-  height: 45svw;
-  width: 45svw;
+  height: 45vw;
+  width: 45vw;
 
   max-width: 400px;
   max-height: 400px;
@@ -213,9 +213,8 @@ $debug: false;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
-  height: 35svw;
-  width: 35svw;
+  height: 35vw;
+  width: 35vw;
 
   max-width: 300px;
   max-height: 300px;
@@ -228,8 +227,10 @@ $debug: false;
 
 .c1 {
   position: absolute;
-  height: 35svw;
-  width: 35svw;
+  overflow: hidden;
+
+  height: 35vw;
+  width: 35vw;
 
   max-width: 300px;
   max-height: 300px;

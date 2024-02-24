@@ -8,15 +8,15 @@ import {
   useState,
 } from "react";
 import Image from "next/image";
-import { PanInfo, motion } from "framer-motion";
+import { PanInfo, motion, motionValue, useMotionValue } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import styles from "./Header.module.scss";
-import { Grid, ImageProps, Position } from "./types";
+import { Grid, SenseImage, Position } from "../../lib/types";
 import BlobSVG from "./BlobSVG";
 
 interface ImgMotionDivProps {
-  image: ImageProps;
+  image: SenseImage;
   index: number;
   randomX: number;
   randomY: number;
@@ -28,8 +28,8 @@ interface ImgMotionDivProps {
   onDragFinish: (
     event: PointerEvent,
     info: PanInfo,
-    imageRef: RefObject<HTMLImageElement>,
-    image: ImageProps,
+    motionImgRef: RefObject<HTMLImageElement>,
+    image: SenseImage,
     end: boolean
   ) => boolean;
 }
@@ -46,57 +46,46 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   parent,
   onDragFinish,
 }) => {
-  const [initialPos, setInitialPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const intersecting = useRef<boolean>(false);
-
-  // useGSAP(() => {
-  //   const timeline = gsap.timeline({ repeat: -1, yoyo: true });
-
-  //   timeline
-  //     .to(imageRef.current, {
-  //       duration: 5,
-  //       delay: index * 0.1,
-  //       ease: "power1.inOut",
-  //       x: initialPos.x + randomX,
-  //       y: initialPos.y + randomY,
-  //     })
-  //     .to(imageRef.current, {
-  //       duration: 5,
-  //       delay: index * 0.1,
-  //       ease: "power1.inOut",
-  //       x: initialPos.x + randomY,
-  //       y: initialPos.y + randomX,
-  //     })
-  //     .to(imageRef.current, {
-  //       duration: 5,
-  //       delay: index * 0.1,
-  //       ease: "power1.inOut",
-  //       x: initialPos.x + randomX,
-  //       y: initialPos.y + randomY,
-  //     })
-  //     .to(imageRef.current, {
-  //       duration: 5,
-  //       delay: index * 0.1,
-  //       ease: "power1.inOut",
-  //       x: initialPos.x,
-  //       y: initialPos.y,
-  //     });
-
-  //   return () => {
-  //     timeline.kill();
-  //   };
-  // }, [index, initialPos.x, initialPos.y, randomX, randomY]);
+  const setImage = useRef(false);
+  const motionImgRef = useRef<HTMLImageElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [end, setEnd] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const fetchPosition = async () => {
       const position: Position = randomPos();
       // console.log(position);
-      setInitialPosition({ x: position.x, y: position.y });
-      // setInitialPosition({ x: 0, y: 0 });
+      setPosition({ x: position.x, y: position.y });
     };
 
     fetchPosition();
   }, [randomPos, grid]);
+
+  useGSAP(() => {
+    if (end) {
+      gsap.killTweensOf(`#${image.text}`);
+      return;
+    }
+    if (!isDragging) {
+      // Check if image is not being dragged
+      const tl = gsap.timeline({
+        defaults: {
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+        },
+      });
+
+      tl.to(`#${image.text}`, {
+        x: randomX,
+        y: randomY,
+        duration: 1,
+      });
+    }
+  }, [end, isDragging]);
 
   // useEffect(() => {
   //   console.log(parent.current?.getBoundingClientRect().top);
@@ -105,11 +94,9 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   //   console.log(parent.current?.getBoundingClientRect().bottom!);
   // }, []);
 
-  const setImage = useRef(false);
-  const imageRef = useRef<HTMLImageElement>(null);
-
   const handleDrag = (event: PointerEvent, info: PanInfo) => {
-    const intersect = onDragFinish(event, info, imageRef, image, false);
+    setIsDragging(true);
+    const intersect = onDragFinish(event, info, motionImgRef, image, false);
     if (intersect != intersecting.current) {
       intersecting.current = intersect;
       if (intersect) {
@@ -121,7 +108,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
             filter: "invert(1)",
           },
           {
-            duration: 1,
+            duration: 0.225,
             ease: "easeInOut",
           }
         );
@@ -132,7 +119,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
             filter: ["invert(1)", "none"],
           },
           {
-            duration: 0.5,
+            duration: 0.225,
             ease: "easeInOut",
           }
         );
@@ -142,50 +129,30 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   };
 
   const handleDragEnd = (event: PointerEvent, info: PanInfo) => {
-    onDragFinish(event, info, imageRef, image, true);
+    const intersect = onDragFinish(event, info, motionImgRef, image, true);
+    if (intersect) {
+      const middleX =
+        parent.current?.getBoundingClientRect().width! / 2 -
+        imageRef.current?.getBoundingClientRect().width! / 2;
+      const middleY =
+        parent.current?.getBoundingClientRect().height! / 2 -
+        imageRef.current?.getBoundingClientRect().height! / 2;
+      setPosition({ x: middleX, y: middleY });
+      setEnd(true);
+    }
+    setIsDragging(false);
   };
 
   return (
     <motion.div
       key={index}
-      initial={{ opacity: 0, x: 0, y: 0 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        x: [
-          initialPos.x,
-          initialPos.x + randomX,
-          initialPos.x + randomY,
-          initialPos.x + randomX,
-          initialPos.x,
-        ],
-        y: [
-          initialPos.y,
-          initialPos.y + randomY,
-          initialPos.y + randomX,
-          initialPos.y + randomY,
-          initialPos.y,
-        ],
-      }}
-      transition={{
-        x: {
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 5,
-          delay: index * 0.1,
-          ease: "easeInOut",
-        },
-        y: {
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 5,
-          delay: index * 0.1,
-          ease: "easeInOut",
-        },
-      }}
-      ref={imageRef}
+      initial={{ opacity: 0, x: position.x, y: position.y }}
+      animate={{ opacity: 1, x: position.x, y: position.y }}
+      transition={{ type: "spring", stiffness: 30, damping: 10 }}
+      id={image.text + "M"}
+      ref={motionImgRef}
       className={styles.imageBox}
-      drag={true}
+      drag={!end}
       dragConstraints={parent}
       onDragStart={() => {
         setImage.current = false;
@@ -195,6 +162,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
     >
       <Image
         id={image.text}
+        ref={imageRef}
         src={image.src}
         alt={image.alt}
         width={image.width}
