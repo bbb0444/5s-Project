@@ -13,7 +13,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import styles from "./Header.module.scss";
 import { Grid, SenseImage, Position } from "../../lib/types";
-import BlobSVG from "./BlobSVG";
+import SVGLoader from "../SVGLoader";
 
 interface ImgMotionDivProps {
   image: SenseImage;
@@ -160,7 +160,15 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
-      <Image
+      <div id={image.text} ref={imageRef} className={styles.image}>
+        <SVGLoader
+          name={image.text}
+          color="white"
+          width={image.width}
+          height={image.height}
+        />
+      </div>
+      {/* <Image
         id={image.text}
         ref={imageRef}
         src={image.src}
@@ -168,16 +176,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
         width={image.width}
         height={image.height}
         className={styles.image}
-      />
-      {/* <div className={styles.imageBlobSVG}>
-        <BlobSVG
-          color1={"rgb(120,0,0)"}
-          color2={"rgb(220,0,0)"}
-          numPoints={5}
-          width={250}
-          height={250}
-        />
-      </div> */}
+      /> */}
     </motion.div>
   );
 };

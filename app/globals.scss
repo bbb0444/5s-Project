@@ -22,6 +22,13 @@
   --main-text-colour: #{$main-text-colour};
   --black: #{$black};
   --secondary-text-colour: #{$secondary-text-colour};
+
+  // * {
+  -ms-overflow-style: none;
+  // }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 main {

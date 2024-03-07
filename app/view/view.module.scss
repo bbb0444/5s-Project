@@ -1,32 +1,126 @@
+$debug: false;
+
 .main {
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   width: 100%;
   height: 100%;
+
+  background-color: white;
+
+  overflow: hidden;
+
+  min-width: 310px;
 }
 
 .middleContainer {
   position: relative;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-wrap: nowrap;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  // justify-content: center;
+  // align-items: center;
+  width: 100%;
 
-  width: 15%;
-  height: 100%;
+  // width: 30%;
+  // min-width: 250px;
+
+  // height: 100%;
 }
 
 .middle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: center;
+  // height: 100px;
+  width: 100%;
+  // padding: 2rem;
+  @if $debug {
+    background-color: red;
+  }
 }
 
+.top {
+  flex-grow: 1;
+  height: 100%;
+  width: 100%;
+
+  @if $debug {
+    background-color: blue;
+  }
+}
+
+.bottom {
+  flex-grow: 1;
+  height: 100%;
+  width: 100%;
+
+  @if $debug {
+    background-color: yellow;
+  }
+}
 .img {
   filter: invert(100%);
+}
+
+.postContainer {
+  // @extend .snap;
+
+  width: 100%;
+  height: 100%;
+
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  // justify-content: space-evenly;
+  align-items: center;
+
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+
+  // height: 100svh;
+  overflow: auto;
+  overflow-y: hidden;
+
+  scrollbar-color: transparent;
+}
+
+.postCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: white;
+  // padding-left: 5vw;
+  // padding-right: 5vw;
+}
+
+.hideScroll {
+  position: absolute;
+  bottom: 5px;
+  // width: 100%;
+  background-color: black;
+}
+
+.snap {
+  scroll-snap-type: inline mandatory;
+  // scroll-padding-inline: 1rem;
+}
+
+.snap > * {
+  scroll-snap-align: start;
 }

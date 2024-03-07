@@ -1,0 +1,55 @@
+.container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
+  // padding: 50px;
+}
+
+.dotContainer {
+  position: relative;
+  margin: 0;
+  /*background:#EEE;*/
+  border: 1px solid #ddd;
+  height: 175px;
+  width: 456px;
+}
+.dot {
+  width: 27px;
+  height: 27px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  border-radius: 50%;
+  position: absolute;
+  // top: 66px;
+  // left: 0px;
+  background-color: #000;
+}
+
+.dot1 {
+  @extend .dot;
+  left: 133px;
+  background-color: #ff0000;
+}
+
+.dot2 {
+  @extend .dot;
+  left: 186px;
+  background-color: #00ff4c;
+}
+
+.dot3 {
+  @extend .dot;
+  left: 239px;
+  background-color: #256aff;
+}
+
+.dot4 {
+  @extend .dot;
+  left: 293px;
+  background-color: #ff54fc;
+}

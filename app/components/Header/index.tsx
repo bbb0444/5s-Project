@@ -97,13 +97,14 @@ const Header = () => {
     animate(
       "#c1",
       {
-        scale: 20,
+        scale: 10,
       },
       {
         duration: 1,
         ease: "easeInOut",
         onComplete: () => {
           router.push(`/view/${image!.text}`);
+          scale: 1;
           // document.body.style.overflow = "auto";
         },
       }
@@ -141,6 +142,8 @@ const Header = () => {
 
   // Update the radius when the component mounts and when the window resizes
   useEffect(() => {
+    document.documentElement.style.backgroundColor = colours.bgColour;
+
     Grid.current = getGrid(parentRef, centerRef, 100);
 
     const updateRadius = () => {
@@ -154,12 +157,14 @@ const Header = () => {
 
     updateRadius();
     window.addEventListener("resize", updateRadius);
+
     // window.addEventListener("mousemove", (event) => {
     //   console.log(event.clientX, event.clientY);
     // });
 
     return () => {
       window.removeEventListener("resize", updateRadius);
+      // window.removeEventListener("popstate", reset);
     };
   }, []);
 
