@@ -1,4 +1,5 @@
 $debug: false;
+@import "../variables.scss";
 
 .main {
   position: absolute;
@@ -67,8 +68,28 @@ $debug: false;
     background-color: yellow;
   }
 }
+
+.text {
+  z-index: 2;
+  position: absolute;
+  color: $black;
+  font-size: 1.5rem;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
 .img {
+  z-index: 1;
   filter: invert(100%);
+
+  padding-left: 100%;
+  padding-right: 100%;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    filter: invert(0%);
+    opacity: 0;
+    scale: 1.1;
+  }
 }
 
 .postContainer {
