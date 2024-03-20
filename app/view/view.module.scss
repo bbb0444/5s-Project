@@ -2,6 +2,10 @@ $debug: false;
 @import "../variables.scss";
 
 .main {
+  overflow: hidden;
+  min-width: 310px;
+  min-height: 580px;
+
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -12,41 +16,6 @@ $debug: false;
   height: 100%;
 
   background-color: white;
-
-  overflow: hidden;
-
-  min-width: 310px;
-}
-
-.middleContainer {
-  position: relative;
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  // justify-content: center;
-  // align-items: center;
-  width: 100%;
-
-  // width: 30%;
-  // min-width: 250px;
-
-  // height: 100%;
-}
-
-.middle {
-  position: relative;
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  justify-content: center;
-  // height: 100px;
-  width: 100%;
-  // padding: 2rem;
-  @if $debug {
-    background-color: red;
-  }
 }
 
 .top {
@@ -66,29 +35,6 @@ $debug: false;
 
   @if $debug {
     background-color: yellow;
-  }
-}
-
-.text {
-  z-index: 2;
-  position: absolute;
-  color: $black;
-  font-size: 1.5rem;
-  padding-left: 5vw;
-  padding-right: 5vw;
-}
-.img {
-  z-index: 1;
-  filter: invert(100%);
-
-  padding-left: 100%;
-  padding-right: 100%;
-  transition: opacity 0.3s ease;
-
-  &:hover {
-    filter: invert(0%);
-    opacity: 0;
-    scale: 1.1;
   }
 }
 

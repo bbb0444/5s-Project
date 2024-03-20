@@ -1,24 +1,45 @@
+"use client";
+
 import FiveSenses from "./components/FiveSenses";
 import Header from "./components/Header";
 import ScrollingText from "./components/ScrollingText";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "./globals.scss";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import RedSquare from "./components/Info/RedSquare";
+import Info from "./components/Info";
+import { toast } from "react-toastify";
 
 export default function Home() {
+  const [showInfo, setShowInfo] = useState(false);
+
+  const showInfoAnimation = useAnimation();
+
+  if (showInfo) {
+    showInfoAnimation.start({ x: 0 });
+  }
+
   return (
     <main className="">
-      {/* <h1>yoawdawdaw</h1> */}
-      {/* <ScrollingText /> */}
-      <Header />
-      {/* <div className="w-1/3 min-w-40"> */}
-
-      {/* <div className="w-2/3 min-w-80 p-6 flex">
-        <div className="flex-1">
-        </div>
-      </div> */}
-      {/* <div>
-        <FiveSenses />
-      </div> */}
+      <AnimatePresence>
+        <motion.div key={0}>
+          <Header />
+        </motion.div>
+        <motion.div
+          key={1}
+          initial={{ x: "-100vw" }}
+          animate={showInfoAnimation}
+          transition={{ type: "spring", stiffness: 80, damping: 25 }}
+          className="w-full h-full"
+        >
+          <RedSquare
+            onClick={() => {
+              setShowInfo(true);
+            }}
+          />
+          <Info />
+        </motion.div>
+      </AnimatePresence>
     </main>
   );
 }

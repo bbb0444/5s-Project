@@ -15,7 +15,7 @@ import Image from "next/image";
 import styles from "./Header.module.scss";
 import { colours } from "../../colours";
 import CameraSearch from "../CameraSearch";
-import { PanInfo, motion, useAnimate } from "framer-motion";
+import { PanInfo, motion, useAnimate, useAnimation } from "framer-motion";
 import {
   SenseImage,
   SenseImages,
@@ -31,13 +31,21 @@ import { useRouter } from "next/navigation";
 const numImages = SenseImages.length;
 const randomXY = () => (Math.random() - 0.5) * 50; // smaller range for subtle floating effect
 
+interface dimentions {
+  radius: number;
+  width: number;
+  height: number;
+}
+
 const Header = () => {
   const router = useRouter();
 
   const parentRef = useRef<HTMLDivElement>(null);
-  const [radius, setRadius] = useState(0);
-  const [parentWidth, setParentWidth] = useState(0);
-  const [parentHeight, setParentHeight] = useState(0);
+  const [parentDim, setParentDim] = useState<dimentions>({
+    radius: 0,
+    width: 0,
+    height: 0,
+  });
 
   const selectedImage = useRef<SenseImage | null>(null);
   const [scope, animate] = useAnimate();
@@ -52,27 +60,15 @@ const Header = () => {
   const outerSVG = useRef<SVGSVGElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const Grid = useRef<Grid>();
+  const container = useAnimation();
+
+  const [Grid, setGrid] = useState<Grid>();
 
   const getRandomPos = () => {
     console.log(Grid);
-    const position: Position = Grid.current!.getRandomGridCellPos();
+    const position: Position = Grid!.getRandomGridCellPos();
     return position;
   };
-
-  const centerRefLockPos = () => {
-    const center = centerRef.current?.getBoundingClientRect();
-    if (center) {
-      return {
-        x: center.left + center.width / 2,
-        y: center.top + center.height / 2,
-      };
-    }
-    return { x: 0, y: 0 };
-  };
-
-  const centerRefLock = centerRefLockPos();
-  console.log("lock", centerRefLock);
 
   function intersectsRef(imageRef: RefObject<HTMLImageElement>) {
     const imageBounds = imageRef.current?.getBoundingClientRect();
@@ -144,14 +140,19 @@ const Header = () => {
   useEffect(() => {
     document.documentElement.style.backgroundColor = colours.bgColour;
 
-    Grid.current = getGrid(parentRef, centerRef, 100);
-
+    console.log(parentDim);
+    let resizeTimeout: NodeJS.Timeout;
     const updateRadius = () => {
       if (parentRef.current) {
-        // console.log(parentRef.current.clientWidth);
-        setRadius(parentRef.current.offsetWidth * 0.5);
-        setParentWidth(parentRef.current.offsetWidth);
-        setParentHeight(parentRef.current.offsetHeight);
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          const parentDim = {
+            radius: parentRef.current!.offsetWidth * 0.5,
+            width: parentRef.current!.offsetWidth,
+            height: parentRef.current!.offsetHeight,
+          };
+          // setParentDim(parentDim);
+        }, 500);
       }
     };
 
@@ -164,14 +165,19 @@ const Header = () => {
 
     return () => {
       window.removeEventListener("resize", updateRadius);
+      clearTimeout(resizeTimeout);
       // window.removeEventListener("popstate", reset);
     };
   }, []);
 
+  useEffect(() => {
+    console.log("yo");
+    setGrid(getGrid(parentRef, centerRef, 100));
+  }, [parentDim]);
+
   return (
     <div className={styles.main} ref={scope}>
       {/* <canvas id="canvas" ref={canvasRef} className="fixed bg-slate-500" /> */}
-      <div className={styles.redSquare} />
       <div className={styles.usable} ref={parentRef}>
         <ul className={styles.column}>
           <div className={styles.circles}>
@@ -179,13 +185,18 @@ const Header = () => {
               <div className={styles.c2}>
                 {/* <BlobSVG color1={"green"} color2={"white"} numPoints={6} /> */}
                 <motion.div id="c1" className={styles.c1} ref={centerRef}>
-                  <BlobSVG color1={"white"} color2={"white"} numPoints={5} />
+                  <BlobSVG
+                    color1={"white"}
+                    color2={"white"}
+                    numPoints={5}
+                    Grid={Grid!}
+                  />
                 </motion.div>
               </div>
             </div>
           </div>
-          <motion.div className={styles.container}>
-            {Grid.current &&
+          <motion.div className={styles.container} animate={container}>
+            {Grid &&
               SenseImages.map((image, index) => {
                 //console.log(image.text, initialX, initialY);
                 return (
@@ -195,10 +206,9 @@ const Header = () => {
                     index={index}
                     randomX={randomXY()}
                     randomY={randomXY()}
-                    lock={centerRefLock}
                     animate={animate}
                     randomPos={getRandomPos}
-                    grid={Grid.current!}
+                    grid={Grid}
                     parent={parentRef}
                     onDragFinish={handleDragFinish}
                   />

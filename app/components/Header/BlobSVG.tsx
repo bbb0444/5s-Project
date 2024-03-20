@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { v4 as uuidv4 } from "uuid";
+import { Grid } from "@/app/lib/types";
 
 type BlobSVGProps = {
   color1: string;
@@ -10,9 +11,17 @@ type BlobSVGProps = {
   numPoints: number;
   width?: number;
   height?: number;
+  Grid: Grid;
 };
 
-function BlobSVG({ color1, color2, numPoints, width, height }: BlobSVGProps) {
+function BlobSVG({
+  color1,
+  color2,
+  numPoints,
+  width,
+  height,
+  Grid,
+}: BlobSVGProps) {
   const outerSVG = useRef<SVGSVGElement>(null);
   const path1 = useRef<SVGPathElement>(null);
   const [gradientId, setGradientId] = useState("");
@@ -35,7 +44,25 @@ function BlobSVG({ color1, color2, numPoints, width, height }: BlobSVGProps) {
         { opacity: 1, duration: 1 }
       );
     }
+  }, []); // No dependencies
 
+  // useEffect(() => {
+  //   const updateRadius = () => {
+  //     if (outerSVG.current) {
+  //       const width = outerSVG.current.getBoundingClientRect().width;
+  //       const height = outerSVG.current.getBoundingClientRect().height;
+  //       console.log(dimensions.width, width, dimensions.height, height);
+  //       if (dimensions.width != width) {
+  //         setCenter({ x: width / 2, y: height / 2 });
+  //         setDimensions({ width, height });
+  //       }
+  //     }
+  //   };
+
+  //   updateRadius();
+  // }, [Grid]);
+
+  useEffect(() => {
     const updateRadius = () => {
       if (outerSVG.current) {
         const width = outerSVG.current.getBoundingClientRect().width;
@@ -204,6 +231,7 @@ function BlobSVG({ color1, color2, numPoints, width, height }: BlobSVGProps) {
       xmlns="http://www.w3.org/2000/svg"
       width={width ? width : "100%"}
       height={height ? height : "100%"}
+      className={styles.svg}
       // preserveAspectRatio="xMidYMid meet"
     >
       {color1 !== color2 && (

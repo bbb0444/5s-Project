@@ -55,18 +55,18 @@ export const SenseImages: SenseImage[] = [
     text: "mouth",
   },
   {
-    src: "/SVG/Hand.svg",
-    alt: "black and white print of a hand",
-    width: 100,
-    height: 100,
-    text: "hand",
-  },
-  {
     src: "/SVG/Nose.svg",
     alt: "black and white print of a nose",
     width: 100,
     height: 100,
     text: "nose",
+  },
+  {
+    src: "/SVG/Hand.svg",
+    alt: "black and white print of a hand",
+    width: 100,
+    height: 100,
+    text: "hand",
   },
 ];
 

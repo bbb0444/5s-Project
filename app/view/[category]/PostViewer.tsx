@@ -76,10 +76,10 @@ function PostViewer({
     }
 
     if (scrollLeft >= scrollSpace - windowWidth) {
-      console.log("end", "scrollLeft", scrollLeft, "scrollSpace", scrollSpace);
+      // console.log("end", "scrollLeft", scrollLeft, "scrollSpace", scrollSpace);
       setLoading(true);
     } else {
-      console.log("scrollLeft", scrollLeft, "scrollSpace", scrollSpace);
+      // console.log("scrollLeft", scrollLeft, "scrollSpace", scrollSpace);
     }
 
     // if (
@@ -138,7 +138,7 @@ function PostViewer({
     const resiseContainer = () => {
       if (window.innerWidth) {
         setWindowWidth(window.innerWidth);
-        console.log("resize", window.innerWidth);
+        // console.log("resize", window.innerWidth);
       }
     };
     addEventListener("resize", resiseContainer);
@@ -152,6 +152,8 @@ function PostViewer({
       className={styles.postContainer}
       style={{ direction: overflowDirection === "left" ? "rtl" : "ltr" }}
       ref={postContainerRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.25 } }}
     >
       {posts &&
         posts.map((post: Post, index: number) => {

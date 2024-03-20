@@ -20,7 +20,7 @@ interface ImgMotionDivProps {
   index: number;
   randomX: number;
   randomY: number;
-  lock: Position;
+  // lock: Position;
   animate: (target: string, animation: object, options: object) => void;
   randomPos: () => Position;
   grid: Grid;
@@ -39,7 +39,6 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   index,
   randomX,
   randomY,
-  lock,
   animate,
   randomPos,
   grid,
