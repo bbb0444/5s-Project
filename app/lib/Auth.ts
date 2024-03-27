@@ -45,7 +45,7 @@ async function getSession() {
   }
 }
 async function validate(code: string) {
-  if (code === "1234") {
+  if (code === "earglue") {
     console.log(true);
     return true;
   }

@@ -65,6 +65,12 @@ $debug: false;
 .img {
   z-index: 1;
   filter: invert(100%);
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .text {

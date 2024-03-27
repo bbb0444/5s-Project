@@ -97,7 +97,7 @@
 
 .video {
   position: relative;
-  // background-color: $black;
+  background-color: $black;
   height: 100%;
   z-index: -1;
 }
@@ -119,6 +119,17 @@
   pointer-events: all;
 }
 
+.videoFeed {
+}
+
+.captureButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: all;
+}
 .static {
   position: absolute;
   top: 0;
@@ -144,16 +155,6 @@
   // background-color: red;
   z-index: -1;
   pointer-events: all;
-}
-
-.croppedImage {
-  // position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: auto;
-  width: 35%;
-  // background-color: green;
 }
 
 .buttons {
@@ -214,6 +215,42 @@
   margin-right: 3.5%;
 }
 
+.uploadBackArrow {
+  position: relative;
+  margin: 1%;
+  top: 0;
+  left: 0;
+  width: 5%;
+  height: 5%;
+}
+
+.rotDisplayContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6%;
+  width: 9.5%;
+  margin-left: 81%;
+  margin-top: 9%;
+  margin-bottom: 50.8%;
+  margin-right: 10%;
+
+  container-type: inline-size;
+
+  background-color: $bg-colour;
+}
+
+.rotValue {
+  top: 10%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $black;
+  font-size: 22cqw;
+  height: 100%;
+}
+
 .category {
   margin: 5%;
 }
@@ -234,23 +271,6 @@
   font-family: "lcd", sans-serif;
 }
 
-.uploadTextArea {
-  @extend .textArea;
-  padding: 5%;
-  width: 100%;
-}
-
-.writingContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  pointer-events: all;
-  width: 100%;
-  height: 100%;
-  min-width: 25rem;
-}
-
 .verificationContainer {
   display: flex;
   flex-direction: column;
@@ -267,4 +287,91 @@
   max-width: 250px;
   // max-height: 150px;
   text-align: center;
+}
+
+.writingArea {
+  position: relative;
+  // width: fit-content;
+  // width: 80vw;
+  // height: 5rem;
+
+  // height: 5rem;
+}
+.writingTextArea {
+  @extend .textArea;
+  width: 100%;
+  height: 100%;
+  padding: 5%;
+}
+
+.writingCharacterCount {
+  position: absolute;
+  padding: 5%;
+  height: fit-content;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%); // Add this line
+}
+
+.writingContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  // width: 100%;
+  // height: 100%;
+  min-width: 25rem;
+}
+
+.writingImageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // border: 1px solid $black;
+}
+
+.writingImageBorder {
+  position: relative; // Add this line
+  max-width: 400px;
+  max-height: 400px;
+  width: 500px; // Adjust as needed
+  height: 500px; // Adjust as needed
+}
+
+.writingCategorySelect {
+  padding: 2.5%;
+}
+
+.writtenBackArrow {
+  width: 10%;
+  height: 10%;
+}
+
+.imageBorder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.croppedImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 5%;
+}
+
+.submitButton {
+  font-family: "lcd", sans-serif;
+  background-color: white;
+  padding-left: 2.5%;
+  padding-right: 2.5%;
+  margin: 1%;
+  border: 1px solid $black;
+  border-radius: 5px;
 }

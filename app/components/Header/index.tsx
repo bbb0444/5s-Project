@@ -49,7 +49,6 @@ const Header = () => {
 
   const selectedImage = useRef<SenseImage | null>(null);
   const [scope, animate] = useAnimate();
-
   const [pointerPosition, setPointerPosition] = useState<{
     x: number;
     y: number;
@@ -59,8 +58,6 @@ const Header = () => {
   const centerRefBounds = useRef<HTMLDivElement>(null);
   const outerSVG = useRef<SVGSVGElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const container = useAnimation();
 
   const [Grid, setGrid] = useState<Grid>();
 
@@ -86,7 +83,6 @@ const Header = () => {
 
   const setSelectedImageCB = useCallback((image: SenseImage | null) => {
     selectedImage.current = image;
-
     document.body.style.overflow = "hidden";
     document.documentElement.style.backgroundColor = "white";
 
@@ -171,12 +167,15 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    console.log("yo");
     setGrid(getGrid(parentRef, centerRef, 100));
   }, [parentDim]);
 
   return (
-    <div className={styles.main} ref={scope}>
+    <div
+      className={styles.main}
+      ref={scope}
+      style={selectedImage.current != null ? { zIndex: 5 } : {}}
+    >
       {/* <canvas id="canvas" ref={canvasRef} className="fixed bg-slate-500" /> */}
       <div className={styles.usable} ref={parentRef}>
         <ul className={styles.column}>
@@ -195,7 +194,7 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <motion.div className={styles.container} animate={container}>
+          <div className={styles.container}>
             {Grid &&
               SenseImages.map((image, index) => {
                 //console.log(image.text, initialX, initialY);
@@ -214,7 +213,7 @@ const Header = () => {
                   />
                 );
               })}
-          </motion.div>
+          </div>
         </ul>
       </div>
     </div>

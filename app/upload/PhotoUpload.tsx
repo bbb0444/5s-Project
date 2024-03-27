@@ -6,12 +6,17 @@ import Image from "next/image";
 
 import { motion, AnimatePresence, delay } from "framer-motion";
 import ImageCropper from "../components/ImageCropper";
+import { Area } from "react-easy-crop";
+import { getCroppedImage } from "../lib/ImageCropConverter";
 import { DropDownMenu, DropDownItem } from "../components/Dropdown";
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+import BackArrow from "@/public/SVG/buttons/back_arrow.svg";
 import { Category } from "../lib/types";
+import { toast } from "react-toastify";
+import { isMobile } from "react-device-detect";
 
 function PhotoUpload({
   setCroppedImage,
@@ -33,7 +38,9 @@ function PhotoUpload({
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [area, setArea] = useState<Area | null>(null);
 
+  const [warned, setWarned] = useState(false);
   const handleOnZoom = useCallback((zoomValue: number) => {
     setZoom(zoomValue);
   }, []);
@@ -43,7 +50,17 @@ function PhotoUpload({
   }, []);
 
   const acceptPhoto = async () => {
+    if (!altUpload) {
+      takePhoto();
+    }
     if (!photoData) return;
+    await getCroppedImage(photoData, area!, rotation, 1000, 1000).then(
+      (croppedImage) => {
+        console.log("yo", croppedImage);
+        setCroppedImage(croppedImage!);
+      }
+    );
+    console.log(area);
     // console.log(croppedImage);
     setActiveWindow("writing");
     //
@@ -76,7 +93,12 @@ function PhotoUpload({
       //   console.error("Your browser does not support camera capture");
       // }
     } catch (err) {
-      console.log("Webcam access blocked by the user or some error occurred");
+      if (warned) return;
+      toast.warn("Webcam access blocked");
+      toast.info("please click on the camera screen to upload a photo...", {
+        // autoClose: false,
+      });
+      setWarned(true);
       setAltUpload(true);
     }
   };
@@ -123,9 +145,12 @@ function PhotoUpload({
 
   return (
     <>
-      <Link href="/">
-        <h1>back</h1>
-      </Link>
+      <div className={styles.uploadBackArrow}>
+        <Link href="/">
+          <BackArrow />
+        </Link>
+      </div>
+
       <div className={styles.cameraContainer}>
         <Image
           src={"/SVG/upload.svg"}
@@ -144,8 +169,9 @@ function PhotoUpload({
                 rotation={rotation}
                 onRotationChange={setRotation}
                 source={photoData!}
-                onCrop={setCroppedImage}
+                onCropComplete={setCroppedImage}
                 onCropChange={setPosition}
+                setArea={setArea}
                 width={1000}
                 height={1000}
               />
@@ -154,7 +180,9 @@ function PhotoUpload({
           {!hasPhoto && (
             <>
               <div className={styles.video}>
-                <video ref={videoRef} className={styles.video} />
+                {!altUpload && (
+                  <video ref={videoRef} className={styles.videoFeed} />
+                )}
                 <div className={styles.altUpload}>
                   <label htmlFor="fileUpload" style={{ cursor: "pointer" }}>
                     <Image
@@ -163,6 +191,7 @@ function PhotoUpload({
                       width={1000}
                       height={1000}
                       className={videoActive ? styles.hidden : styles.static}
+                      // style={{ pointerEvents: "none" }}
                     ></Image>
                   </label>
                 </div>
@@ -195,9 +224,12 @@ function PhotoUpload({
         </div>
 
         <div className={styles.buttons}>
-          {videoActive && !hasPhoto && (
-            <button onClick={takePhoto}> capture </button>
-          )}
+          {/* {videoActive && !hasPhoto && (
+            <button onClick={takePhoto} className={styles.captureButton}>
+              {" "}
+              capture{" "}
+            </button>
+          )} */}
           <div className={styles.accept}>
             <button onClick={acceptPhoto} className={styles.buttons}>
               <Image
@@ -228,18 +260,23 @@ function PhotoUpload({
               />
             </button>
           </div>
+          <div className={styles.rotDisplayContainer}>
+            <text className={styles.rotValue}> {rotation.toFixed(2)}° </text>
+          </div>
           {/* <div className={styles.rotSlider}> */}
         </div>
       </div>
-      <input
-        type="range"
-        min="0"
-        max="360"
-        value={rotation}
-        onChange={(e) => setRotation(parseInt(e.target.value))}
-        ref={inputRef}
-        style={{}}
-      />
+      {!isMobile && (
+        <input
+          type="range"
+          min="0"
+          max="360"
+          value={rotation}
+          onChange={(e) => setRotation(parseInt(e.target.value))}
+          ref={inputRef}
+          style={{}}
+        />
+      )}
     </>
   );
 }

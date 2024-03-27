@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import { loadImage } from "../../lib/ImageLoader";
+import LoadingBar from "../LoadingBar";
 
 interface Props {
   source: string;
@@ -9,25 +10,12 @@ interface Props {
   zoom: number;
   rotation: number;
   position: { x: number; y: number };
+  setArea: React.Dispatch<React.SetStateAction<Area | null>>;
   onZoomChange(zoomValue: number): void;
   onRotationChange(rotationValue: number): void;
-  onCrop(image: Blob): void;
+  onCropComplete(image: Blob): void;
   onCropChange(position: { x: number; y: number }): void;
-}
-
-function degreesToRadians(degrees: number): number {
-  return (degrees * Math.PI) / 180;
-}
-
-function rotateSize(width: number, height: number, rotation: number) {
-  const rotRad = degreesToRadians(rotation);
-
-  return {
-    boxWidth:
-      Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
-    boxHeight:
-      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
-  };
+  // onCropComplete(croppedArea: Area, croppedAreaPixels: Area): void;
 }
 
 const ImageCropper: FC<Props> = ({
@@ -37,7 +25,8 @@ const ImageCropper: FC<Props> = ({
   zoom,
   rotation,
   position,
-  onCrop,
+  setArea,
+  onCropComplete,
   onZoomChange,
   onCropChange,
   onRotationChange,
@@ -50,65 +39,8 @@ const ImageCropper: FC<Props> = ({
   const desiredHeight = height;
 
   const handleCrop = (_: Area, croppedAreaPixels: Area) => {
-    try {
-      if (!croppedAreaPixels) return;
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      const image = new Image();
-      image.crossOrigin = "anonymous";
-
-      image.onload = () => {
-        // set the size for canvas
-
-        const { boxWidth, boxHeight } = rotateSize(
-          image.width,
-          image.height,
-          rotation
-        );
-
-        const rotRad = degreesToRadians(rotation);
-        canvas.width = boxWidth;
-        canvas.height = boxHeight;
-
-        ctx.translate(boxWidth / 2, boxHeight / 2);
-        ctx.rotate(rotRad);
-        ctx.translate(-image.width / 2, -image.height / 2);
-
-        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-        ctx.drawImage(image, 0, 0);
-
-        const croppedCanvas = document.createElement("canvas");
-        const croppedCtx = croppedCanvas.getContext("2d");
-
-        if (!croppedCtx) return;
-
-        const { x, y, width, height } = croppedAreaPixels;
-
-        croppedCanvas.width = desiredWidth;
-        croppedCanvas.height = desiredHeight;
-        croppedCtx.drawImage(
-          canvas,
-          x,
-          y,
-          width,
-          height,
-          0,
-          0,
-          desiredWidth,
-          desiredHeight
-        );
-
-        croppedCanvas.toBlob((blob) => {
-          if (blob) onCrop(blob);
-        }, "image/png");
-      };
-
-      image.src = source;
-    } catch (error) {
-      console.log(error);
-    }
+    setArea(croppedAreaPixels);
+    // ... existing code ...
   };
 
   const calculateSize = async () => {
@@ -139,7 +71,7 @@ const ImageCropper: FC<Props> = ({
       ref={containerRef}
     >
       {loading ? (
-        <div>loading</div>
+        <LoadingBar />
       ) : (
         <div
           // className="relative mx-auto"

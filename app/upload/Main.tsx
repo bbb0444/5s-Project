@@ -56,7 +56,9 @@ function Index({ isVerified }: { isVerified: boolean }) {
       });
     };
 
-    verifyAndSetWindow();
+    if (submitCode !== "") {
+      verifyAndSetWindow();
+    }
     // console.log(activeWindow);
   }, [searchParams, submitCode]);
 

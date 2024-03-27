@@ -92,7 +92,7 @@ $debug: false;
 .imageBox {
   position: absolute;
   z-index: 2;
-
+  cursor: pointer;
   //for rotating the images back the right way, put as parent of image
 
   // pointer-events: all;

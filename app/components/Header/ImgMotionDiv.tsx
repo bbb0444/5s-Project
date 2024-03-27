@@ -52,6 +52,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   const imageRef = useRef<HTMLImageElement>(null);
   const [end, setEnd] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const tlRef = useRef<GSAPTimeline | null>(null);
 
   useEffect(() => {
     const fetchPosition = async () => {
@@ -60,28 +61,43 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
       setPosition({ x: position.x, y: position.y });
     };
 
-    fetchPosition();
+    if (!end) {
+      fetchPosition();
+    }
   }, [randomPos, grid]);
 
   useGSAP(() => {
-    if (end) {
-      gsap.killTweensOf(`#${image.text}`);
-      return;
-    }
-    if (!isDragging) {
-      // Check if image is not being dragged
-      const tl = gsap.timeline({
-        defaults: {
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-        },
-      });
+    // console.log("useGSAP");
 
+    const tl = gsap.timeline({
+      defaults: {
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      },
+    });
+
+    tl.to(`#${image.text}`, {
+      x: randomX,
+      y: randomY,
+      duration: 1,
+    });
+
+    tlRef.current = tl;
+  }, []);
+
+  useEffect(() => {
+    if (end) {
+      // console.log("end");
+      const tl = gsap.timeline();
       tl.to(`#${image.text}`, {
-        x: randomX,
-        y: randomY,
+        x: 0,
+        y: 0,
         duration: 1,
+        ease: "sine.inOut",
+        onComplete: () => {
+          tlRef.current?.kill();
+        },
       });
     }
   }, [end, isDragging]);
@@ -94,7 +110,7 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
   // }, []);
 
   const handleDrag = (event: PointerEvent, info: PanInfo) => {
-    setIsDragging(true);
+    // setIsDragging(true);
     const intersect = onDragFinish(event, info, motionImgRef, image, false);
     if (intersect != intersecting.current) {
       intersecting.current = intersect;
@@ -136,10 +152,13 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
       const middleY =
         parent.current?.getBoundingClientRect().height! / 2 -
         imageRef.current?.getBoundingClientRect().height! / 2;
-      setPosition({ x: middleX, y: middleY });
+
       setEnd(true);
+      setPosition({ x: middleX, y: middleY });
+      // setMiddlePos({ x: middleX, y: middleY });
+      // setEnd(true);
     }
-    setIsDragging(false);
+    // setIsDragging(false);
   };
 
   return (
@@ -153,9 +172,9 @@ const ImgMotionDiv: FC<ImgMotionDivProps> = ({
       className={styles.imageBox}
       drag={!end}
       dragConstraints={parent}
-      onDragStart={() => {
-        setImage.current = false;
-      }}
+      // onDragStart={() => {
+      //   setImage.current = false;
+      // }}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >

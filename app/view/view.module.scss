@@ -2,9 +2,9 @@ $debug: false;
 @import "../variables.scss";
 
 .main {
-  overflow: hidden;
+  overflow: show;
   min-width: 310px;
-  min-height: 580px;
+  min-height: 980px;
 
   position: absolute;
   display: flex;
