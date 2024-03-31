@@ -23,14 +23,14 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     try {
       const category_key = CategoryMap[category as Category];
-      // console.log(category, category_key, count);
-      // const result = await sql`
-      //   SELECT * FROM uploads
-      //   WHERE category_key = ${category_key}
-      //   LIMIT ${parseInt(count)}
-      //   OFFSET ${parseInt(from)}`;
-      // const posts = result.rows;
-      const posts = await getPosts();
+      console.log(category, category_key, count);
+      const result = await sql`
+        SELECT * FROM uploads
+        WHERE category_key = ${category_key}
+        LIMIT ${parseInt(count)}
+        OFFSET ${parseInt(from)}`;
+      const posts = result.rows;
+      // const posts = await getPosts();
       return NextResponse.json(posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
