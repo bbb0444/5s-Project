@@ -54,7 +54,6 @@ async function uploadFileToS3(
       if (!result) {
         retries--;
         if (retries > 0) {
-          // Wait for 3 seconds before the next retry
           await new Promise((resolve) => setTimeout(resolve, 3000));
         }
       }
