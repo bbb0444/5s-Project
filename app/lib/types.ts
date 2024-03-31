@@ -24,6 +24,14 @@ export interface GridCell {
 export type Category = "eye" | "ear" | "mouth" | "nose" | "hand";
 export const Categories: Category[] = ["eye", "ear", "mouth", "nose", "hand"];
 
+export const CategoryMap: { [key in Category]?: number } = Categories.reduce(
+  (map, category, index) => {
+    map[category] = index;
+    return map;
+  },
+  {} as { [key in Category]?: number }
+);
+
 export interface SenseImage {
   src: string;
   alt: string;
@@ -76,8 +84,15 @@ SenseImages.forEach((image) => {
 });
 
 export interface Post {
-  userId: number;
   id: number;
-  category: Category;
-  body: string;
+  s3_bucket_link: string;
+  category_key: number;
+  description: string;
+  created_at: Date;
+}
+
+export interface UploadImage {
+  image: Blob;
+  key: string;
+  contentType: "image/png";
 }

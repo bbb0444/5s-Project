@@ -13,6 +13,23 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "yk";
+  src: url("/fonts/yk.ttf") format("woff2"), url("/fonts/yk.ttf") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "airbrush";
+  src: url("/fonts/airbrush.ttf") format("woff2"),
+    url("/fonts/airbrush.ttf") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   transition: background-color 1s ease-in-out;
 

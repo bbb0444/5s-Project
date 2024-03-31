@@ -1,49 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { getPosts } from "../../lib/mockData";
+import { useEffect, useRef, useState, memo } from "react";
 import styles from "../view.module.scss";
-import { Post } from "@/app/lib/types";
+import { Category, Post } from "@/app/lib/types";
 import PostCard from "@/app/components/PostCard";
 import { motion, useAnimation } from "framer-motion";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import LoadingBar from "@/app/components/LoadingBar";
+import MovingText from "@/app/components/MovingText";
 
 interface PostViewerProps {
   overflowDirection?: "left" | "right";
   sortOrder?: "asc" | "desc";
   position?: "top" | "bottom";
+  posts: Post[];
+  numOfPosts: number;
+  endOfPosts: boolean;
+  onScrollEnd: () => void;
 }
 
 function PostViewer({
   overflowDirection = "right",
   sortOrder = "asc",
   position = "top",
+  posts,
+  numOfPosts,
+  endOfPosts,
+  onScrollEnd,
 }: PostViewerProps) {
-  const [posts, setPosts] = useState([]);
+  const increment = 2;
   const postContainerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const [postWidth, setPostWidth] = useState(0);
-  const [numOfPosts, setNumOfPosts] = useState(0);
   const [windowWidth, setWindowWidth] = useState(0);
-  const [loading, setLoading] = useState(false);
 
   const initialPos = position === "top" ? "-100%" : "100%";
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      let posts = await getPosts().then((res) => res);
-      if (sortOrder == "desc") {
-        // console.log(position, sortOrder, "sorting");
-        posts = posts.sort((a: Post, b: Post) => (a.id < b.id ? 1 : -1));
-      }
-      setPosts(posts);
-      setNumOfPosts(posts.length);
-      // setLoading(false);
-    };
-
-    fetchPosts();
-  }, [sortOrder, position]);
+  const MemoizedPostCard = memo(PostCard);
 
   // useEffect(() => {
   //   // disableBodyScroll(document.body);
@@ -70,69 +62,25 @@ function PostViewer({
 
   const handleScroll = () => {
     let scrollLeft = postContainerRef.current!.scrollLeft;
-    const scrollSpace = numOfPosts * postWidth - postWidth * 1; //
-    if (sortOrder === "desc") {
-      scrollLeft = -scrollLeft;
-    }
 
-    if (scrollLeft >= scrollSpace - windowWidth) {
-      // console.log("end", "scrollLeft", scrollLeft, "scrollSpace", scrollSpace);
-      setLoading(true);
-    } else {
-      // console.log("scrollLeft", scrollLeft, "scrollSpace", scrollSpace);
+    if (position === "bottom") {
+      scrollLeft = -1 * scrollLeft;
     }
+    const container = postContainerRef.current!;
+    const scrollRight =
+      container.scrollWidth - scrollLeft - container.clientWidth;
 
-    // if (
-    //   window.innerHeight + document.documentElement.scrollTop !==
-    //   document.documentElement.offsetHeight
-    // )
-    //   return;
-    // console.log("yo");
+    if (scrollRight <= postWidth * 2) {
+      console.log("Reached the end of the container, fetching more posts");
+      onScrollEnd();
+    }
   };
 
   useEffect(() => {
-    if (
-      !postContainerRef.current ||
-      numOfPosts == 0 ||
-      postWidth == 0 ||
-      windowWidth == 0
-    )
-      return;
+    if (!postContainerRef.current || postWidth == 0 || windowWidth == 0) return;
     postContainerRef.current!.addEventListener("scrollend", handleScroll);
     return () => window.removeEventListener("scrollend", handleScroll);
-  }, [numOfPosts, postWidth, postContainerRef.current, windowWidth]);
-
-  useEffect(() => {
-    const updatePostWidth = () => {
-      if (postContainerRef.current && postContainerRef.current.firstChild) {
-        const width = (postContainerRef.current.firstChild as HTMLElement)
-          .offsetWidth;
-        if (width !== 0) {
-          setPostWidth(width);
-        }
-      }
-    };
-
-    updatePostWidth();
-  }, [posts]);
-
-  useEffect(() => {
-    if (postWidth > 0) {
-      controls.start((index) =>
-        postWidth * (index + 1) > postContainerRef.current!.clientWidth * 2
-          ? {
-              opacity: 1,
-              transition: { duration: 0 },
-              y: 0,
-            }
-          : {
-              opacity: 1,
-              transition: { duration: 0.5, delay: index * 0.3 },
-              y: 0,
-            }
-      );
-    }
-  }, [postWidth, controls]);
+  }, [postWidth, postContainerRef.current, windowWidth]);
 
   useEffect(() => {
     const resiseContainer = () => {
@@ -144,16 +92,39 @@ function PostViewer({
     addEventListener("resize", resiseContainer);
     resiseContainer();
 
+    const updatePostWidth = () => {
+      if (postContainerRef.current && postContainerRef.current.firstChild) {
+        const width = (postContainerRef.current.firstChild as HTMLElement)
+          .offsetWidth;
+        if (width !== 0) {
+          setPostWidth(width);
+        }
+      }
+    };
+
+    updatePostWidth();
+
     return () => removeEventListener("resize", resiseContainer);
   }, []);
+
+  const variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
   return (
     <motion.div
       className={styles.postContainer}
       style={{ direction: overflowDirection === "left" ? "rtl" : "ltr" }}
       ref={postContainerRef}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.25 } }}
+      variants={variants}
+      initial="hidden"
+      animate="show"
     >
       {posts &&
         posts.map((post: Post, index: number) => {
@@ -161,20 +132,22 @@ function PostViewer({
           return (
             <motion.div
               className={styles.postCard}
-              key={post.id}
+              key={`${post.id}-${index}`}
               custom={index}
-              animate={controls}
-              initial={
-                postWidth * (index + 1) < postContainerRef.current!.clientWidth
-                  ? { opacity: 0, y: initialPos }
-                  : { opacity: 0, y: 0 }
-              }
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.1 }} // Set the delay here
             >
-              <PostCard post={post} />
+              <MemoizedPostCard post={post} />
             </motion.div>
           );
         })}
-      <LoadingBar direction={position == "top" ? "forwards" : "backwards"} />
+      {!endOfPosts && (
+        <LoadingBar direction={position == "top" ? "forwards" : "backwards"} />
+      )}
+      {endOfPosts && numOfPosts == 0 && (
+        <MovingText text={"nothing to see here"} />
+      )}
     </motion.div>
   );
 }

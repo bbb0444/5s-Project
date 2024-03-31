@@ -1,136 +1,79 @@
 export const getPosts = async () => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve([...posts]);
+      resolve([...posts_two]);
     }, 1000);
   });
 };
 
+const posts_empty = [];
+const posts_two = [
+  {
+    id: 23,
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/231c1ea4-b8a5-4dd7-9ede-4c0e06c42bf5",
+    category_key: 3,
+    description: "Sally's face",
+    created_at: "2024-03-30T22:23:51.893Z",
+  },
+];
+const posts_four = [
+  {
+    id: 23,
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/231c1ea4-b8a5-4dd7-9ede-4c0e06c42bf5",
+    category_key: 3,
+    description: "Sally's face",
+    created_at: "2024-03-30T22:23:51.893Z",
+  },
+  {
+    id: 24,
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/231c1ea4-b8a5-4dd7-9ede-4c0e06c42bf5",
+    category_key: 3,
+    description: "Sally's face",
+    created_at: "2024-03-30T22:23:51.893Z",
+  },
+];
 const posts = [
   {
-    userId: 1,
-    id: 1,
-    category: "nose",
-    body: "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-  },
-  {
-    userId: 1,
-    id: 2,
-    category: "mouth",
-    body: "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla",
-  },
-  {
-    userId: 1,
-    id: 3,
-    category: "hand",
-    body: "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut",
-  },
-  {
-    userId: 1,
-    id: 4,
-    category: "eye",
-    body: "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit",
-  },
-  {
-    userId: 1,
-    id: 5,
-    category: "ear",
-    body: "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque",
-  },
-  {
-    userId: 1,
-    id: 6,
-    category: "eye",
-    body: "ut aspernatur corporis harum nihil quis provident sequi\nmollitia nobis aliquid molestiae\nperspiciatis et ea nemo ab reprehenderit accusantium quas\nvoluptate dolores velit et doloremque molestiae",
-  },
-  {
-    userId: 1,
-    id: 7,
-    category: "mouth",
-    body: "dolore placeat quibusdam ea quo vitae\nmagni quis enim qui quis quo nemo aut saepe\nquidem repellat excepturi ut quia\nsunt ut sequi eos ea sed quas",
-  },
-  {
-    userId: 1,
-    id: 8,
-    category: "nose",
-    body: "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-  },
-  {
-    userId: 1,
-    id: 9,
-    category: "mouth",
-    body: "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla",
-  },
-  {
-    userId: 1,
-    id: 10,
-    category: "hand",
-    body: "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut",
-  },
-  {
-    userId: 1,
     id: 11,
-    category: "eye",
-    body: "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit",
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/864b542f-4cac-466c-a644-a85d1a22848c",
+    category_key: 3,
+    description: "",
+    created_at: "2024-03-28T21:51:22.546Z",
   },
   {
-    userId: 1,
     id: 12,
-    category: "ear",
-    body: "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque",
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/ff0badbf-6938-4d7a-a9e2-36aaccf218f9",
+    category_key: 3,
+    description: "",
+    created_at: "2024-03-28T21:51:23.416Z",
   },
   {
-    userId: 1,
     id: 13,
-    category: "eye",
-    body: "ut aspernatur corporis harum nihil quis provident sequi\nmollitia nobis aliquid molestiae\nperspiciatis et ea nemo ab reprehenderit accusantium quas\nvoluptate dolores velit et doloremque molestiae",
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/931f8aaf-e24c-491e-81fe-3ac6db603d86",
+    category_key: 3,
+    description: "",
+    created_at: "2024-03-28T21:51:26.058Z",
   },
   {
-    userId: 1,
     id: 14,
-    category: "mouth",
-    body: "dolore placeat quibusdam ea quo vitae\nmagni quis enim qui quis quo nemo aut saepe\nquidem repellat excepturi ut quia\nsunt ut sequi eos ea sed quas",
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/fd2ee2e9-f73a-49f1-97d4-97921cc668e6",
+    category_key: 3,
+    description: "",
+    created_at: "2024-03-28T21:53:39.998Z",
   },
   {
-    userId: 1,
-    id: 15,
-    category: "nose",
-    body: "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-  },
-  {
-    userId: 1,
-    id: 16,
-    category: "mouth",
-    body: "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla",
-  },
-  {
-    userId: 1,
-    id: 17,
-    category: "hand",
-    body: "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut",
-  },
-  {
-    userId: 1,
     id: 18,
-    category: "eye",
-    body: "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit",
-  },
-  {
-    userId: 1,
-    id: 19,
-    category: "ear",
-    body: "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque",
-  },
-  {
-    userId: 1,
-    id: 20,
-    category: "eye",
-    body: "ut aspernatur corporis harum nihil quis provident sequi\nmollitia nobis aliquid molestiae\nperspiciatis et ea nemo ab reprehenderit accusantium quas\nvoluptate dolores velit et doloremque molestiae",
-  },
-  {
-    userId: 1,
-    id: 21,
-    category: "mouth",
-    body: "dolore placeat quibusdam ea quo vitae\nmagni quis enim qui quis quo nemo aut saepe\nquidem repellat excepturi ut quia\nsunt ut sequi eos ea sed quas",
+    s3_bucket_link:
+      "https://5s-project.s3.ap-southeast-2.amazonaws.com/nose/078564bb-b68b-4b32-a23e-0c36d4bae098",
+    category_key: 3,
+    description: "ayo",
+    created_at: "2024-03-28T23:43:53.896Z",
   },
 ];

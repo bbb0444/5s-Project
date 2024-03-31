@@ -1,6 +1,18 @@
 /** @type {import('nexxt').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: `${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com`,
+        // port: "",
+        // pathname: "/account123/**",
+      },
+    ],
+  },
+
   reactStrictMode: true,
+
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>

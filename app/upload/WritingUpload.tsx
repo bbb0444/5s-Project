@@ -5,12 +5,17 @@ import styles from "./upload.module.scss";
 import Image from "next/image";
 
 import ImageBorder from "@/public/SVG/image_border.svg";
-import { DropDownMenu, DropDownItem } from "../components/Dropdown";
+// import { DropDownMenu, DropDownItem } from "../components/Dropdown";
 
 import { Category, Categories, senseImageMap } from "../lib/types";
 import CategorySelect from "@/app/components/CategorySelect";
 import BackArrow from "@/public/SVG/buttons/back_arrow.svg";
 import { SenseImage } from "@/app/lib/types";
+
+import { useMotionValue } from "framer-motion";
+import { toast } from "react-toastify";
+
+import { useRouter } from "next/navigation";
 
 function WritingUpload({
   croppedImage,
@@ -31,11 +36,46 @@ function WritingUpload({
   const [imageUrl, setImageUrl] = useState(() =>
     URL.createObjectURL(croppedImage!)
   );
+  const [uploading, setUploading] = useState(false);
+  // const progress = useMotionValue(0);
+  const router = useRouter();
 
   useEffect(() => {
     // Update the image URL when `croppedImage` changes
     setImageUrl(URL.createObjectURL(croppedImage!));
   }, [croppedImage]);
+
+  const startUpload = async () => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("image", croppedImage);
+    formData.append("category", category);
+    formData.append("description", body);
+
+    try {
+      const response = await fetch("/api/s3-upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      console.log(data.status);
+      if (data.error) {
+        toast.error("Failed to upload image");
+        setUploading(false);
+        return;
+      } else {
+        toast.success("Image uploaded successfully");
+        router.push(`/view/${category}`);
+      }
+
+      setUploading(false);
+    } catch (error) {
+      console.log(error);
+      setUploading(false);
+      toast.error("Failed to upload image, please try again later.");
+    }
+  };
 
   const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > characterLimit) return;
@@ -71,9 +111,9 @@ function WritingUpload({
         />
       </div>
       <div className={styles.writingArea}>
-        <text className={styles.writingCharacterCount}>
+        <p className={styles.writingCharacterCount}>
           {body.length}/{characterLimit}
-        </text>
+        </p>
         <textarea
           required
           value={body}
@@ -82,7 +122,13 @@ function WritingUpload({
           className={styles.writingTextArea}
         ></textarea>
       </div>
-      <button className={styles.submitButton}>submit</button>
+      <button
+        className={styles.submitButton}
+        disabled={uploading}
+        onClick={startUpload}
+      >
+        upload{" "}
+      </button>
     </div>
   );
 }

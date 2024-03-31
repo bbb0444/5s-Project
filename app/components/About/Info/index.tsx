@@ -12,7 +12,7 @@ import CrossSVG from "@/public/SVG/buttons/x_icon.svg";
 import { motion, useAnimation } from "framer-motion";
 
 function Info({ onClick }: { onClick: () => void }) {
-  const text = useRef<SVGTextElement>(null);
+  const text = useRef<HTMLParagraphElement>(null);
   const container = useRef<HTMLDivElement>(null);
   const animate = useAnimation();
 
@@ -34,14 +34,14 @@ function Info({ onClick }: { onClick: () => void }) {
           <CrossSVG color={colours.bgColour} />
         </motion.svg>
         <div className={styles.middle}>
-          <text className={styles.text} ref={text} text-anchor="start">
+          <p className={styles.text} ref={text}>
             Despite our differences, we humans share a common set of truth
             givers that allows us to perceive and interact with the world around
             us. Let us celebrate the beauty of these shared traits together
             {/* <tspan x="0" dy="1.2em" alignment-baseline="hanging">
               - g
             </tspan> */}
-          </text>
+          </p>
         </div>
         {/* <Image
           src="/imgs/glueLogoBase.png"
