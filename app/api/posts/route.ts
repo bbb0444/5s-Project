@@ -30,7 +30,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         LIMIT ${parseInt(count)}
         OFFSET ${parseInt(from)}`;
       const posts = result.rows;
-      // const posts = await getPosts();
+      // const posts = await getPosts(count);
       return NextResponse.json(posts);
     } catch (error) {
       console.error("Error fetching posts:", error);

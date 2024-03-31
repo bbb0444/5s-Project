@@ -107,22 +107,11 @@ function PostViewer({
     return () => removeEventListener("resize", resiseContainer);
   }, []);
 
-  const variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
   return (
     <motion.div
       className={styles.postContainer}
       style={{ direction: overflowDirection === "left" ? "rtl" : "ltr" }}
       ref={postContainerRef}
-      variants={variants}
       initial="hidden"
       animate="show"
     >
