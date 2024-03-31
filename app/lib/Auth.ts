@@ -2,6 +2,8 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
+import { sql } from "@vercel/postgres";
+
 const secretKey = "bbportfolioweb";
 const key = new TextEncoder().encode(secretKey);
 
@@ -37,6 +39,13 @@ export async function verify(code: string | undefined) {
   return false;
 }
 
+export async function getCode() {
+  const session = await getSession();
+  if (session) {
+    return session.code;
+  }
+}
+
 async function getSession() {
   const session = cookies().get("session")?.value;
   if (session) {
@@ -45,9 +54,7 @@ async function getSession() {
   }
 }
 async function validate(code: string) {
-  if (code === "earglue") {
-    console.log(true);
-    return true;
-  }
+  return true;
+
   return false;
 }

@@ -29,7 +29,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
   const [from, setFrom] = useState(0);
   const [count, setCount] = useState(increment);
   const isFetchingRef = useRef<boolean>(false);
-  const [endOfPosts, setEndOfPosts] = useState(false);
+  const endOfPostsRef = useRef<boolean>(false);
 
   const category = senseState.text;
 
@@ -59,9 +59,9 @@ export default function Main({ sense }: { sense: SenseImage }) {
       " FETCHPOSTS: isfetching: ",
       isFetchingRef.current,
       "end of posts: ",
-      endOfPosts
+      endOfPostsRef.current
     );
-    if (isFetchingRef.current || endOfPosts) return; // If a fetch operation is in progress, exit the function
+    if (isFetchingRef.current || endOfPostsRef.current) return; // If a fetch operation is in progress, exit the function
     isFetchingRef.current = true;
 
     try {
@@ -74,9 +74,10 @@ export default function Main({ sense }: { sense: SenseImage }) {
       }
 
       await response.json().then((newPostsASC) => {
+        // console.log(newPostsASC);
         if (newPostsASC.length < increment) {
+          endOfPostsRef.current = true;
           console.log("end of posts");
-          setEndOfPosts(true);
         }
         // console.log(position, sortOrder, "sorting");
         const newPostsDESC = [...newPostsASC].sort((a: Post, b: Post) =>
@@ -122,7 +123,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
   // };
 
   const onScrollEnd = () => {
-    if (!isFetchingRef.current || !endOfPosts) {
+    if (!isFetchingRef.current || !endOfPostsRef.current) {
       fetchPosts();
     }
   };
@@ -138,7 +139,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
         <PostViewer
           posts={postData.postsASC}
           numOfPosts={numOfPosts}
-          endOfPosts={endOfPosts}
+          endOfPosts={endOfPostsRef.current}
           onScrollEnd={onScrollEnd}
         />
       </motion.div>
@@ -157,7 +158,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
           position="bottom"
           posts={postData.postsDESC}
           numOfPosts={numOfPosts}
-          endOfPosts={endOfPosts}
+          endOfPosts={endOfPostsRef.current}
           onScrollEnd={onScrollEnd}
         />
       </motion.div>

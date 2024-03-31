@@ -25,11 +25,13 @@ async function uploadFileToS3(
   category: Category,
   description: string
 ) {
+  const code = "earglue";
+
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: `${category}/` + `${uuid4()}`,
+    Key: `${category}/${code}` + `${uuid4()}`,
     Body: buffer,
     ContentType: "image/jpg",
   };
