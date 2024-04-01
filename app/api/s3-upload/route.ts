@@ -8,6 +8,7 @@ const accessKeyId = process.env.AWS_S3_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_S3_SECRET_ACCESS_KEY;
 
 import { sql } from "@vercel/postgres";
+import { getCode } from "@/app/lib/Auth";
 
 if (!region || !accessKeyId || !secretAccessKey) {
   throw new Error("AWS configuration environment variables are not set");
@@ -25,13 +26,17 @@ async function uploadFileToS3(
   category: Category,
   description: string
 ) {
-  const code = "earglue";
+  const code = await getCode();
+  if (!code) {
+    throw new Error("Unauthorized");
+    // return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: `${category}/${code}` + `${uuid4()}`,
+    Key: `${category}/${code}/` + `${uuid4()}`,
     Body: buffer,
     ContentType: "image/jpg",
   };
@@ -52,7 +57,7 @@ async function uploadFileToS3(
     let retries = 3;
 
     while (retries > 0 && !result) {
-      result = await uploadToPG(fileLink, category, description);
+      result = await uploadToPG(fileLink, category, description, code);
       if (!result) {
         retries--;
         if (retries > 0) {
@@ -97,12 +102,13 @@ export async function POST(request: Request) {
 async function uploadToPG(
   fileLink: string,
   category: Category,
-  description: string
+  description: string,
+  code: string
 ) {
   const category_key = CategoryMap[category];
   try {
     // console.log(fileLink, category_key, description);
-    await sql`INSERT INTO uploads (s3_bucket_link, category_key, description) VALUES (${fileLink}, ${category_key} , ${description})`;
+    await sql`INSERT INTO uploads (s3_bucket_link, category_key, description, code) VALUES (${fileLink}, ${category_key} , ${description}, ${code})`;
     return true;
   } catch (error) {
     console.error("Error inserting into PG:", error);

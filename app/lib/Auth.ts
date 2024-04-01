@@ -1,8 +1,8 @@
 "use server";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-
-import { sql } from "@vercel/postgres";
+import fs from "fs";
+import path from "path";
 
 const secretKey = "bbportfolioweb";
 const key = new TextEncoder().encode(secretKey);
@@ -43,6 +43,9 @@ export async function getCode() {
   const session = await getSession();
   if (session) {
     return session.code;
+  } else {
+    throw new Error("Unauthorized");
+    return null;
   }
 }
 
@@ -54,7 +57,13 @@ async function getSession() {
   }
 }
 async function validate(code: string) {
-  return true;
+  const codesFilePath = path.resolve("./", "codes.json");
+  const codesFileContent = fs.readFileSync(codesFilePath, "utf-8");
+  const codes = JSON.parse(codesFileContent);
 
-  return false;
+  if (codes.includes(code)) {
+    return true;
+  } else {
+    return false;
+  }
 }

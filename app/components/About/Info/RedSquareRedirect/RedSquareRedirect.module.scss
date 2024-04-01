@@ -1,0 +1,11 @@
+.container {
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+}
+
+.offset {
+  position: absolute;
+  top: 0;
+  left: -100%;
+}

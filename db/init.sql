@@ -21,6 +21,14 @@ CREATE TABLE uploads (
     CHECK (category_key >= 0 AND category_key <= 4)
 );
 
+CREATE TABLE codes (
+ code VARCHAR(50) NOT NULL
+);
+
+INSERT INTO codes (code)
+VALUES ('earglue');
+
+
 CREATE INDEX idx_upload_category_created_at ON uploads(category_key, created_at DESC);
 
 ALTER TABLE categories ADD COLUMN uploads INTEGER DEFAULT 0;

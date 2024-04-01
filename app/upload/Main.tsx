@@ -38,7 +38,7 @@ function Index({ isVerified }: { isVerified: boolean }) {
 
   const submit = useAnimation();
 
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextAreaValue(e.target.value);
   };
 
@@ -67,12 +67,13 @@ function Index({ isVerified }: { isVerified: boolean }) {
       <ToastNotification />
       {activeWindow === "verification" && (
         <div className={styles.verificationContainer}>
-          <motion.textarea
+          <motion.input
             animate={submit}
             transition={{ duration: 1 }}
             maxLength={15}
-            rows={1}
+            // rows={1}
             onChange={handleTextAreaChange}
+            type="password"
             className={styles.verificationTextArea}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
@@ -80,7 +81,7 @@ function Index({ isVerified }: { isVerified: boolean }) {
                 setSubmitCode(textAreaValue);
               }
             }}
-          ></motion.textarea>
+          ></motion.input>
         </div>
       )}
       <AnimatePresence initial={true} mode="popLayout">

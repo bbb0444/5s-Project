@@ -28,7 +28,6 @@ function PostViewer({
   endOfPosts,
   onScrollEnd,
 }: PostViewerProps) {
-  const increment = 2;
   const postContainerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const [postWidth, setPostWidth] = useState(0);

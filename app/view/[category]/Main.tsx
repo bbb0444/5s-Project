@@ -2,11 +2,13 @@
 import styles from "../view.module.scss";
 import { SenseImage, senseImageMap, Post } from "../../lib/types";
 import CategorySelect from "@/app/components/CategorySelect";
+import RedSquareRedirect from "@/app/components/About/Info/RedSquareRedirect";
 import { colours } from "@/app/colours";
 import PostViewer from "./PostViewer";
 import ClientEffects from "./ClientEffects";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+// import { useRouter } from "next/navigation";
 
 export default function Main({ sense }: { sense: SenseImage }) {
   const controlsTop = useAnimation();
@@ -23,7 +25,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
   };
 
   const [postData, setPostData] = useState<postObj>(postDataInit);
-  const increment = 2;
+  const increment = 20;
   const [numOfPosts, setNumOfPosts] = useState(0);
   const [totalNumOfPosts, setTotalNumOfPosts] = useState(0);
   const [from, setFrom] = useState(0);
@@ -104,24 +106,6 @@ export default function Main({ sense }: { sense: SenseImage }) {
     }
   };
 
-  // const fetchTotalPostCount = async () => {
-  //   try {
-  //     const response = await fetch(`/api/posts/total?category=${category}`);
-
-  //     if (!response.ok) {
-  //       throw new Error("HTTP error " + response.status);
-  //     }
-
-  //     await response
-  //       .json()
-  //       .then((data) => setTotalNumOfPosts(data.posts[0].uploads));
-  //   } catch (error) {
-  //     console.log("Fetch Error: ", error);
-  //   } finally {
-  //     fetchPosts();
-  //   }
-  // };
-
   const onScrollEnd = () => {
     if (!isFetchingRef.current || !endOfPostsRef.current) {
       fetchPosts();
@@ -131,10 +115,11 @@ export default function Main({ sense }: { sense: SenseImage }) {
   useEffect(() => {
     // fetchTotalPostCount();
     fetchPosts();
-  }, []);
+  });
 
   return (
     <div className={styles.main}>
+      {/* <RedSquareRedirect /> */}
       <motion.div className={styles.top} animate={controlsTop}>
         <PostViewer
           posts={postData.postsASC}
