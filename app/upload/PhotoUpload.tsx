@@ -15,17 +15,19 @@ import Link from "next/link";
 
 import BackArrow from "@/public/SVG/buttons/back_arrow.svg";
 import { Category } from "../lib/types";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 import { isMobile } from "react-device-detect";
 
 function PhotoUpload({
   setCroppedImage,
   setActiveWindow,
+  category,
 }: {
   setCroppedImage: React.Dispatch<React.SetStateAction<Blob | undefined>>;
   setActiveWindow: React.Dispatch<
     React.SetStateAction<"verification" | "camera" | "writing">
   >;
+  category: Category;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -33,7 +35,7 @@ function PhotoUpload({
   const [videoActive, setVideoActive] = useState(false);
   const [photoData, setPhotoData] = useState<string | null>(null);
   const [hasPhoto, setHasPhoto] = useState(false);
-  const [altUpload, setAltUpload] = useState(false);
+  const [altUpload, setAltUpload] = useState(true);
 
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
@@ -41,6 +43,8 @@ function PhotoUpload({
   const [area, setArea] = useState<Area | null>(null);
 
   const [warned, setWarned] = useState(false);
+  const [toastId, setToastId] = useState<Id | null>(null);
+
   const handleOnZoom = useCallback((zoomValue: number) => {
     setZoom(zoomValue);
   }, []);
@@ -51,6 +55,7 @@ function PhotoUpload({
 
   const acceptPhoto = async () => {
     if (!altUpload) {
+      // console.log("yo");
       takePhoto();
     }
     if (!photoData) return;
@@ -86,6 +91,7 @@ function PhotoUpload({
           }
         })
         .catch((err) => {
+          toast.warn("camera access blocked :(");
           console.error(err);
         });
       // } else {
@@ -94,10 +100,6 @@ function PhotoUpload({
       // }
     } catch (err) {
       if (warned) return;
-      toast.warn("Webcam access blocked");
-      toast.info("please click on the camera screen to upload a photo...", {
-        // autoClose: false,
-      });
       setWarned(true);
       setAltUpload(true);
     }
@@ -130,25 +132,42 @@ function PhotoUpload({
   const reset = () => {
     setZoom(1); // Reset zoom to initial value
     setRotation(0); // Reset rotation to initial value
-    // console.log(croppedImage);
     setPosition({ x: 0, y: 0 });
   };
   const abort = () => {
     setHasPhoto(false);
     setPhotoData(null);
-    getCapture();
   };
 
   useEffect(() => {
-    getCapture();
-  }, []);
+    if ((photoData && toastId) || (!altUpload && toastId)) {
+      toast.dismiss(toastId);
+    } else if (altUpload && !toastId) {
+      const id = toast.info("click on the camera screen to upload a photo...", {
+        autoClose: false,
+      });
+      setToastId(id);
+    }
+  }, [altUpload, photoData]);
 
   return (
     <>
       <div className={styles.uploadBackArrow}>
-        <Link href="/">
+        <Link href={"/view/" + category}>
           <BackArrow />
         </Link>
+      </div>
+      <div className={styles.useCameraButtonContainer}>
+        <button
+          className={styles.useCameraButton}
+          onClick={() => {
+            setAltUpload(false);
+            getCapture();
+          }}
+        >
+          {" "}
+          use camera{" "}
+        </button>
       </div>
 
       <div className={styles.cameraContainer}>
@@ -193,6 +212,9 @@ function PhotoUpload({
                       className={videoActive ? styles.hidden : styles.static}
                       // style={{ pointerEvents: "none" }}
                     ></Image>
+                    {/* <p className={styles.altUploadText}>
+                      click here to upload a photo
+                    </p> */}
                   </label>
                 </div>
               </div>
@@ -261,7 +283,7 @@ function PhotoUpload({
             </button>
           </div>
           <div className={styles.rotDisplayContainer}>
-            <text className={styles.rotValue}> {rotation.toFixed(2)}° </text>
+            <p className={styles.rotValue}> {rotation.toFixed(2)}° </p>
           </div>
           {/* <div className={styles.rotSlider}> */}
         </div>

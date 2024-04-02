@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import RedSquare from "../RedSquare";
 import styles from "./RedSquareRedirect.module.scss";
 import { motion, useAnimation } from "framer-motion";
@@ -8,6 +8,7 @@ import { motion, useAnimation } from "framer-motion";
 const Index = () => {
   const [isHovered, setIsHovered] = useState(false);
   const aniamtion = useAnimation();
+  const redirecting = useRef(false);
 
   const animateIn = () => {
     aniamtion.start({
@@ -16,25 +17,28 @@ const Index = () => {
   };
 
   const animateOut = () => {
+    if (redirecting.current) return;
     aniamtion.start({
-      x: 0,
+      x: "-100px",
+      transition: { duration: 0.5 },
     });
   };
   const redirect = () => {
+    redirecting.current = true;
     window.location.href = "/";
   };
 
   return (
     <div
       className={styles.container}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => animateIn()}
+      onMouseLeave={() => animateOut()}
     >
       <motion.div
         className={styles.offset}
-        initial={""} // initial position
+        initial={{ x: "-100px" }} // initial position
         animate={aniamtion} // if hovered, move to original position, else move to the right
-        transition={{ duration: 0.5 }} // transition duration
+        transition={{ duration: 0.25 }} // transition duration
       >
         <RedSquare onClick={redirect} />
       </motion.div>

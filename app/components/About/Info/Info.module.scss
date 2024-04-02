@@ -18,8 +18,6 @@
   z-index: 1;
   bottom: 0;
   right: 0;
-  width: 0;
-  height: 0;
   width: 100px;
   height: 100px;
   pointer-events: all;
@@ -55,24 +53,33 @@
   display: flex;
 
   justify-content: center;
-
   align-items: center;
+
   container-type: inline-size;
 }
 
 .text {
   font-family: "airbrush", sans-serif;
   color: white;
-  height: 100%;
-  width: 100%;
+  height: fit-content;
+  width: fit-content;
   padding: 5rem;
-  font-size: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // font-size: 3rem;
+
+  display: block;
+  justify-content: flex-start;
+  align-items: self-start;
+  flex-wrap: wrap;
 
   font-size: 5cqw;
 }
+
+.text > div {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin: 2px;
+}
+
 @keyframes blink {
   0%,
   49% {

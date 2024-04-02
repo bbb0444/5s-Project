@@ -37,7 +37,7 @@ interface dimentions {
   height: number;
 }
 
-const Header = () => {
+const Header = ({ onExit }: { onExit: () => void }) => {
   const router = useRouter();
 
   const parentRef = useRef<HTMLDivElement>(null);
@@ -82,6 +82,7 @@ const Header = () => {
   }
 
   const setSelectedImageCB = useCallback((image: SenseImage | null) => {
+    onExit();
     selectedImage.current = image;
     document.body.style.overflow = "hidden";
     document.documentElement.style.backgroundColor = "white";
@@ -134,7 +135,7 @@ const Header = () => {
 
   // Update the radius when the component mounts and when the window resizes
   useEffect(() => {
-    document.documentElement.style.backgroundColor = colours.bgColour;
+    document.documentElement.style.backgroundColor = colours.bgColour2;
 
     console.log(parentDim);
     let resizeTimeout: NodeJS.Timeout;

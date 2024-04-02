@@ -119,7 +119,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
 
   return (
     <div className={styles.main}>
-      {/* <RedSquareRedirect /> */}
+      <RedSquareRedirect />
       <motion.div className={styles.top} animate={controlsTop}>
         <PostViewer
           posts={postData.postsASC}

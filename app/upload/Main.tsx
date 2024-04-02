@@ -98,6 +98,7 @@ function Index({ isVerified }: { isVerified: boolean }) {
             <PhotoUpload
               setCroppedImage={setCroppedImage}
               setActiveWindow={setActiveWindow}
+              category={category}
             />
           </motion.div>
         )}
