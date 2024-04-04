@@ -4,21 +4,16 @@ import styles from "./CategorySelect.module.scss";
 import { motion, animate } from "framer-motion";
 import { colours } from "@/app/colours";
 import SVGLoader from "@/app/components/SVGLoader";
-import {
-  Categories,
-  SenseImage,
-  SenseImages,
-  senseImageMap,
-} from "@/app/lib/types";
+import { Categories, Image, SenseImages, senseImageMap } from "@/app/lib/types";
 import { useState } from "react";
 import Link from "next/link";
 import LeftArrow from "@/public/SVG/buttons/left_arrow.svg";
 import RightArrow from "@/public/SVG/buttons/right_arrow.svg";
 
 interface CategorySelect {
-  sense: SenseImage;
+  sense: Image;
   animateOut: () => Promise<boolean>;
-  setSense: (sense: SenseImage) => void;
+  setSense: (sense: Image) => void;
   hover: boolean;
 }
 const CategorySelect = ({
@@ -34,6 +29,9 @@ const CategorySelect = ({
     animateOut()
       .then((res) => {
         if (res) {
+          if (SenseImage.text === "arbor") {
+            return;
+          }
           const currentIndex = Categories.indexOf(SenseImage.text);
           if (direction === "left") {
             const prevIndex =
