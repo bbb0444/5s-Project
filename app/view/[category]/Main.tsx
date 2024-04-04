@@ -1,6 +1,6 @@
 "use client";
 import styles from "../view.module.scss";
-import { SenseImage, senseImageMap, Post } from "../../lib/types";
+import { Image, senseImageMap, Post } from "../../lib/types";
 import CategorySelect from "@/app/components/CategorySelect";
 import RedSquareRedirect from "@/app/components/About/Info/RedSquareRedirect";
 import { colours } from "@/app/colours";
@@ -10,7 +10,7 @@ import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 // import { useRouter } from "next/navigation";
 
-export default function Main({ sense }: { sense: SenseImage }) {
+export default function Main({ sense }: { sense: Image }) {
   const controlsTop = useAnimation();
   const controlsBottom = useAnimation();
   const [senseState, setSense] = useState(sense);
@@ -51,7 +51,7 @@ export default function Main({ sense }: { sense: SenseImage }) {
     return true;
   };
 
-  const setSenseState = (sense: SenseImage) => {
+  const setSenseState = (sense: Image) => {
     setSense(sense);
     window.location.href = "/view/" + sense.text;
   };

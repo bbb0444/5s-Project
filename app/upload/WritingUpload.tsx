@@ -2,15 +2,15 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import styles from "./upload.module.scss";
-import Image from "next/image";
 
 import ImageBorder from "@/public/SVG/image_border.svg";
 // import { DropDownMenu, DropDownItem } from "../components/Dropdown";
 
+import NextImage from "next/image";
 import { Category, Categories, senseImageMap } from "../lib/types";
 import CategorySelect from "@/app/components/CategorySelect";
 import BackArrow from "@/public/SVG/buttons/back_arrow.svg";
-import { SenseImage } from "@/app/lib/types";
+import { Image } from "@/app/lib/types";
 
 import { useMotionValue } from "framer-motion";
 import { toast } from "react-toastify";
@@ -93,7 +93,7 @@ function WritingUpload({
       <div className={styles.writingImageContainer}>
         <div className={styles.writingImageBorder}>
           <ImageBorder className={styles.imageBorder} />
-          <Image
+          <NextImage
             src={imageUrl}
             alt="cropped user image"
             width={100} // width of the image file
@@ -106,7 +106,10 @@ function WritingUpload({
         <CategorySelect
           sense={senseImage!}
           animateOut={() => Promise.resolve(true)}
-          setSense={(sense: SenseImage) => setCategory(sense.text)}
+          setSense={(sense: Image) => {
+            if (sense.text === "arbor") return;
+            setCategory(sense.text);
+          }}
           hover={false}
         />
       </div>

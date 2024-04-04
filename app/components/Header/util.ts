@@ -1,11 +1,5 @@
 import { useState, useRef, useEffect, RefObject } from "react";
-import {
-  Grid,
-  GridCell,
-  Position,
-  SenseImage,
-  SenseImages,
-} from "../../lib/types";
+import { Grid, GridCell, Position } from "../../lib/types";
 
 export const getGrid = (
   parentRef: RefObject<HTMLDivElement>,
