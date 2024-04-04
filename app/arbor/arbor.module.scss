@@ -1,0 +1,19 @@
+.container {
+  width: 100svw;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  container-type: inline-size;
+}
+
+.heading {
+  font-size: 5cqw;
+  // min-width: 500px;
+  font-family: "airbrush", sans-serif;
+  color: white;
+  // height: 100%;
+  // width: 100%;
+  // margin-bottom: 1rem;
+}

@@ -7,16 +7,15 @@ import {
   useRef,
   useState,
 } from "react";
-import Image from "next/image";
 import { PanInfo, motion, motionValue, useMotionValue } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import styles from "./Header.module.scss";
-import { Grid, SenseImage, Position } from "../../lib/types";
+import { Grid, Image, Position } from "../../lib/types";
 import SVGLoader from "../SVGLoader";
 
 interface ImgMotionDivProps {
-  image: SenseImage;
+  image: Image;
   index: number;
   randomX: number;
   randomY: number;
@@ -29,7 +28,7 @@ interface ImgMotionDivProps {
     event: PointerEvent,
     info: PanInfo,
     motionImgRef: RefObject<HTMLImageElement>,
-    image: SenseImage,
+    image: Image,
     end: boolean
   ) => boolean;
 }

@@ -5,7 +5,8 @@ import path from "path";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   if (req.method === "POST") {
-    const auth = req.nextUrl.searchParams.get("code");
+    const auth = req.nextUrl.searchParams.get("auth");
+    const code = req.nextUrl.searchParams.get("code");
     console.log(auth);
     if (auth === "bbportfolioweb") {
       console.log("authed");

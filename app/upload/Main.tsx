@@ -13,11 +13,12 @@ import Link from "next/link";
 
 import { Category, Categories } from "../lib/types";
 import PhotoUpload from "./PhotoUpload";
-import WritingUplaod from "./WritingUpload";
+import WritingUpload from "./WritingUpload";
 
 import { verify } from "@/app/lib/Auth";
 import { toast } from "react-toastify";
 import ToastNotification from "@/app/components/ToastNotification";
+import { VerifyCode } from "../components/VerifyCode";
 
 function Index({ isVerified }: { isVerified: boolean }) {
   // writing
@@ -33,56 +34,17 @@ function Index({ isVerified }: { isVerified: boolean }) {
     isVerified ? "camera" : "verification"
   );
 
-  const [textAreaValue, setTextAreaValue] = useState("");
-  const [submitCode, setSubmitCode] = useState("");
-
-  const submit = useAnimation();
-
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTextAreaValue(e.target.value);
+  const onVerified = () => {
+    setActiveWindow("camera");
   };
-
   useEffect(() => {
-    // toast.info("enter code to verify");
     setCategory(searchParams.get("category") as Category);
-    const verifyAndSetWindow = async () => {
-      await verify(submitCode).then((res) => {
-        if (res) {
-          setActiveWindow("camera");
-          // toast.success("verified!");
-        } else {
-          toast.error("invalid code");
-        }
-      });
-    };
-
-    if (submitCode !== "") {
-      verifyAndSetWindow();
-    }
-    // console.log(activeWindow);
-  }, [searchParams, submitCode]);
+  }, [searchParams]);
 
   return (
     <div className={styles.main}>
-      <ToastNotification />
       {activeWindow === "verification" && (
-        <div className={styles.verificationContainer}>
-          <motion.input
-            animate={submit}
-            transition={{ duration: 1 }}
-            maxLength={15}
-            // rows={1}
-            onChange={handleTextAreaChange}
-            type="password"
-            className={styles.verificationTextArea}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSubmitCode(textAreaValue);
-              }
-            }}
-          ></motion.input>
-        </div>
+        <VerifyCode onVerified={onVerified} />
       )}
       <AnimatePresence initial={true} mode="popLayout">
         {activeWindow === "camera" && (
@@ -116,7 +78,7 @@ function Index({ isVerified }: { isVerified: boolean }) {
                 exit: { duration: 0.75, delay: 0.25, type: "spring" }, // delay for exiting animation
               }}
             >
-              <WritingUplaod
+              <WritingUpload
                 category={category}
                 croppedImage={croppedImage!}
                 setCategory={setCategory}

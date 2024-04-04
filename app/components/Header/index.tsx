@@ -10,15 +10,16 @@ import {
   createContext,
   RefObject,
   useLayoutEffect,
+  useContext,
 } from "react";
-import Image from "next/image";
 import styles from "./Header.module.scss";
 import { colours } from "../../colours";
 import CameraSearch from "../CameraSearch";
 import { PanInfo, motion, useAnimate, useAnimation } from "framer-motion";
 import {
-  SenseImage,
+  Image,
   SenseImages,
+  ExclusiveImages,
   Position,
   Grid,
   GridCell,
@@ -27,8 +28,8 @@ import ImgMotionDiv from "./ImgMotionDiv";
 import BlobSVG from "./BlobSVG";
 import { getGrid } from "./util";
 import { useRouter } from "next/navigation";
+import { LandingPageContext } from "@/app/components/LandingPage";
 
-const numImages = SenseImages.length;
 const randomXY = () => (Math.random() - 0.5) * 50; // smaller range for subtle floating effect
 
 interface dimentions {
@@ -37,9 +38,14 @@ interface dimentions {
   height: number;
 }
 
-const Header = ({ onExit }: { onExit: () => void }) => {
+const Header = ({
+  onExit,
+  isVerified,
+}: {
+  onExit: () => void;
+  isVerified: boolean;
+}) => {
   const router = useRouter();
-
   const parentRef = useRef<HTMLDivElement>(null);
   const [parentDim, setParentDim] = useState<dimentions>({
     radius: 0,
@@ -47,7 +53,7 @@ const Header = ({ onExit }: { onExit: () => void }) => {
     height: 0,
   });
 
-  const selectedImage = useRef<SenseImage | null>(null);
+  const selectedImage = useRef<Image | null>(null);
   const [scope, animate] = useAnimate();
   const [pointerPosition, setPointerPosition] = useState<{
     x: number;
@@ -60,6 +66,18 @@ const Header = ({ onExit }: { onExit: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [Grid, setGrid] = useState<Grid>();
+
+  const images = useRef<Image[]>(SenseImages);
+
+  const context = useContext(LandingPageContext);
+  const { setIsVerified } = context!;
+  setIsVerified(isVerified);
+
+  if (isVerified) {
+    images.current = SenseImages.concat(ExclusiveImages);
+  }
+
+  console.log("isVerified", isVerified);
 
   const getRandomPos = () => {
     console.log(Grid);
@@ -81,36 +99,53 @@ const Header = ({ onExit }: { onExit: () => void }) => {
     );
   }
 
-  const setSelectedImageCB = useCallback((image: SenseImage | null) => {
-    onExit();
-    selectedImage.current = image;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.backgroundColor = "white";
+  const setSelectedImageCB = useCallback(
+    (image: Image | null) => {
+      onExit();
+      // Hide all other images
+      const container = document.querySelector(`.${styles.container}`);
+      const children = container?.querySelectorAll(`:scope > *`);
 
-    animate(
-      "#c1",
-      {
-        scale: 10,
-      },
-      {
-        duration: 1,
-        ease: "easeInOut",
-        onComplete: () => {
-          router.push(`/view/${image!.text}`);
-          scale: 1;
-          // document.body.style.overflow = "auto";
+      console.log(children);
+      children?.forEach((child) => {
+        const element = child as HTMLElement;
+        if (!element.id.includes(image!.text)) {
+          element.style.transition = "opacity 0.5s ease-out";
+          element.style.opacity = "0";
+        }
+      });
+
+      // Set the selected image
+      selectedImage.current = image;
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.backgroundColor = "white";
+
+      animate(
+        "#c1",
+        {
+          scale: 10,
         },
-      }
-    );
+        {
+          duration: 1,
+          ease: "easeInOut",
+          onComplete: () => {
+            router.push(image!.link + image!.text);
+            scale: 1;
+            // document.body.style.overflow = "auto";
+          },
+        }
+      );
 
-    console.log(selectedImage.current);
-  }, []);
+      console.log(selectedImage.current);
+    },
+    [animate, onExit, router]
+  );
 
   const handleDragFinish = (
     event: PointerEvent,
     info: PanInfo,
     imageRef: RefObject<HTMLImageElement>,
-    image: SenseImage,
+    image: Image,
     end: boolean
   ) => {
     const imagePos = {
@@ -165,7 +200,7 @@ const Header = ({ onExit }: { onExit: () => void }) => {
       clearTimeout(resizeTimeout);
       // window.removeEventListener("popstate", reset);
     };
-  }, []);
+  }, [parentDim]);
 
   useEffect(() => {
     setGrid(getGrid(parentRef, centerRef, 100));
@@ -197,7 +232,7 @@ const Header = ({ onExit }: { onExit: () => void }) => {
           </div>
           <div className={styles.container}>
             {Grid &&
-              SenseImages.map((image, index) => {
+              images.current.map((image, index) => {
                 //console.log(image.text, initialX, initialY);
                 return (
                   <ImgMotionDiv

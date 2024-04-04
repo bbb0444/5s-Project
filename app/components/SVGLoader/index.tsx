@@ -1,4 +1,4 @@
-import { Category } from "@/app/lib/types";
+import { Category, Exclusive } from "@/app/lib/types";
 import React from "react";
 
 import Ear from "@/public/SVG/ear.svg";
@@ -6,9 +6,10 @@ import Eye from "@/public/SVG/eye.svg";
 import Hand from "@/public/SVG/hand.svg";
 import Mouth from "@/public/SVG/mouth.svg";
 import Nose from "@/public/SVG/nose.svg";
+import Arbor from "@/public/SVG/tree.svg";
 
 type SVGLoaderProps = {
-  name: Category;
+  name: Category | Exclusive;
   color: string;
   width: number;
   height: number;
@@ -63,6 +64,17 @@ function index({ name, color = "white", width, height }: SVGLoaderProps) {
       return (
         <Nose
           fill={color}
+          width={width}
+          height={height}
+          //viewBox={"0 0 " + width + " " + height}
+        />
+      );
+      break;
+
+    case "arbor":
+      return (
+        <Arbor
+          fill={"red"}
           width={width}
           height={height}
           //viewBox={"0 0 " + width + " " + height}

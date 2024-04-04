@@ -21,6 +21,8 @@ export interface GridCell {
   occupied: boolean;
 }
 
+export type Exclusive = "arbor";
+
 export type Category = "eye" | "ear" | "mouth" | "nose" | "hand";
 export const Categories: Category[] = ["eye", "ear", "mouth", "nose", "hand"];
 
@@ -32,53 +34,70 @@ export const CategoryMap: { [key in Category]?: number } = Categories.reduce(
   {} as { [key in Category]?: number }
 );
 
-export interface SenseImage {
+export interface Image {
   src: string;
   alt: string;
   width: number;
   height: number;
-  text: Category;
+  text: Category | Exclusive;
+  link: string;
 }
 
-export const SenseImages: SenseImage[] = [
+export const SenseImages: Image[] = [
   {
-    src: "/SVG/Eye.svg",
+    src: "/SVG/eye.svg",
     alt: "black and white print of an eye",
     width: 110,
     height: 110,
     text: "eye",
+    link: "/view/",
   },
   {
-    src: "/SVG/Ear.svg",
+    src: "/SVG/ear.svg",
     alt: "black and white print of an ear",
     width: 95,
     height: 95,
     text: "ear",
+    link: "/view/",
   },
   {
-    src: "/SVG/Mouth.svg",
+    src: "/SVG/mouth.svg",
     alt: "black and white print of a mouth",
     width: 90,
     height: 90,
     text: "mouth",
+    link: "/view/",
   },
   {
-    src: "/SVG/Nose.svg",
+    src: "/SVG/nose.svg",
     alt: "black and white print of a nose",
     width: 100,
     height: 100,
     text: "nose",
+    link: "/view/",
   },
   {
-    src: "/SVG/Hand.svg",
+    src: "/SVG/hand.svg",
     alt: "black and white print of a hand",
     width: 100,
     height: 100,
     text: "hand",
+    link: "/view/",
   },
 ];
 
-export const senseImageMap: Map<string, SenseImage> = new Map();
+export const ExclusiveImages: Image[] = [
+  {
+    src: "/SVG/tree.svg",
+    alt: "black and white print of a tree",
+    width: 120,
+    height: 120,
+    text: "arbor",
+    link: "/",
+  },
+];
+
+export const senseImageMap: Map<string, Image> = new Map();
 SenseImages.forEach((image) => {
   senseImageMap.set(image.text, image);
 });

@@ -11,6 +11,12 @@
   height: 100svh;
   // width: 100px;
   // height: 100px;
+  display: flex;
+  flex-direction: column;
+  // justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow-y: hidden;
 }
 
 .exitButton {
@@ -47,11 +53,26 @@
   // animation: blink 2s infinite;
 }
 
-.middle {
-  width: 100%;
-  height: 100%;
+.topTextContainer,
+.botTextContainer {
+  flex: 1;
   display: flex;
 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+}
+
+.mainTextContainer {
+  width: 100%;
+  height: 100%;
+
+  max-width: 1240px;
+
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -63,7 +84,7 @@
   color: white;
   height: fit-content;
   width: fit-content;
-  padding: 5rem;
+  padding: 5%;
   // font-size: 3rem;
 
   display: block;
@@ -74,7 +95,14 @@
   font-size: 5cqw;
 }
 
-.text > div {
+.subText {
+  @extend .text;
+  font-size: 3cqw;
+  color: rgb(255, 255, 255);
+  opacity: 0.5;
+}
+
+.text > span {
   display: inline-flex;
   flex-wrap: wrap;
   margin: 2px;
