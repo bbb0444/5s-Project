@@ -8,42 +8,34 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const auth = req.nextUrl.searchParams.get("auth");
     const code = req.nextUrl.searchParams.get("code");
     console.log(auth);
-    if (auth === "bbportfolioweb") {
-      console.log("authed");
-
-      const fs = require("fs");
-
-      try {
-        const result = await sql`
+    try {
+      const result = await sql`
           SELECT code FROM codes`;
 
-        const codes = result.rows.map((row) => row.code);
-        const jsonString = JSON.stringify(codes, null, 2); // The second parameter is for formatting the output
+      const codes = result.rows.map((row) => row.code);
+      const jsonString = JSON.stringify(codes, null, 2); // The second parameter is for formatting the output
 
+      if (codes.includes(auth)) {
         // Specify the path to the file
         const filePath = "./codes.json"; // Adjust the path as necessary
 
         // Write the JSON string to the file
-        fs.writeFile(
-          filePath,
-          jsonString,
-          "utf8",
-          (err: any) => {
-            if (err) {
-              console.error("Error writing file:", err);
-              return;
-            }
-            console.log("File has been created");
-          },
-          []
-        );
+        fs.writeFile(filePath, jsonString, "utf8").then((err: any) => {
+          if (err) {
+            console.error("Error writing file:", err);
+            return;
+          }
+          console.log("File has been created");
+        });
         // console.log(codes);
 
         return new Response("success :)");
-      } catch (error) {
-        console.error("Error", error);
-        return new Response("error", { status: 405 });
+      } else {
+        return new Response("invalid code", { status: 405 });
       }
+    } catch (error) {
+      console.error("Error", error);
+      return new Response("error", { status: 405 });
     }
   }
   return new Response("not allowed", { status: 405 });
