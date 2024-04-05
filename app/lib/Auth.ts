@@ -3,6 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import fs from "fs";
 import path from "path";
+import { sql } from "@vercel/postgres";
 
 const secretKey = "bbportfolioweb";
 const key = new TextEncoder().encode(secretKey);
@@ -29,12 +30,17 @@ export async function verify(code: string | undefined) {
       return true;
     }
   } else {
-    if (await validate(code)) {
+    const verified = await validate(code).then(async (valid) => {
+      console.log(valid);
+      if (!valid) {
+        return false;
+      }
       const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
       const session = await encrypt({ code });
       cookies().set("session", session, { expires, httpOnly: true });
       return true;
-    }
+    });
+    return verified;
   }
   return false;
 }
@@ -59,11 +65,25 @@ async function getSession() {
 async function validate(code: string) {
   const codesFilePath = path.resolve("./", "codes.json");
   const codesFileContent = fs.readFileSync(codesFilePath, "utf-8");
-  const codes = JSON.parse(codesFileContent);
 
-  if (codes.includes(code)) {
-    return true;
-  } else {
-    return false;
-  }
+  // const codes = JSON.parse(codesFileContent);
+  const validate = await fetchCodes().then((codes) => {
+    console.log(code, codes);
+    if (codes.includes(code)) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  return validate;
+}
+
+async function fetchCodes() {
+  const result = await sql`
+          SELECT code FROM codes`;
+
+  const codes = result.rows.map((row) => row.code);
+  const jsonString = JSON.stringify(codes, null, 2); // The second parameter is for formatting the output
+
+  return codes;
 }
