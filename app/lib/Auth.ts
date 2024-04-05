@@ -63,8 +63,8 @@ async function getSession() {
   }
 }
 async function validate(code: string) {
-  const codesFilePath = path.resolve("./", "codes.json");
-  const codesFileContent = fs.readFileSync(codesFilePath, "utf-8");
+  // const codesFilePath = path.resolve("./", "codes.json");
+  // const codesFileContent = fs.readFileSync(codesFilePath, "utf-8");
 
   // const codes = JSON.parse(codesFileContent);
   const validate = await fetchCodes().then((codes) => {
